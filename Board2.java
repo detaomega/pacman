@@ -7,7 +7,6 @@ public class Board2 extends JPanel implements ActionListener {
     private Dimension d;
     private final Font smallFont = new Font("Helvetica", Font.BOLD, 14);
 
-    private Image ii;
     private Color dotColor = new Color(192, 192, 0);
     private Color mazeColor;
 
