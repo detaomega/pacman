@@ -237,9 +237,6 @@ public class Board extends JPanel implements ActionListener {
     }
 
 
-
-    
-
     private void initGame() {
         
         pacsLeft = 3;
