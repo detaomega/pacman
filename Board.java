@@ -17,12 +17,10 @@ public class Board extends JPanel implements ActionListener {
 
     private int pacsLeft, score;
     private int[] dx, dy;
-
     private int pacmand_x, pacmand_y;
- 
+
 
     private int req_x, req_y;
-    private boolean initflag;
     private boolean dying;
 
     private DrawPacman drawpac;
@@ -46,11 +44,8 @@ public class Board extends JPanel implements ActionListener {
             1, 25, 24, 24, 24, 24, 24, 24, 24, 24, 16, 16, 16, 18, 20,
             9, 8, 8, 8, 8, 8, 8, 8, 8, 8, 25, 24, 24, 24, 28
     };  
-    // pacman map
 
 
-
-    private int[] screenData;
     private Timer timer;
 
     // constructor
@@ -68,7 +63,7 @@ public class Board extends JPanel implements ActionListener {
 
 
     private void initVariables() {
-        screenData = new int[N_BLOCKS * N_BLOCKS];
+
 
         d = new Dimension(400, 400);
         dx = new int[4];
@@ -81,7 +76,6 @@ public class Board extends JPanel implements ActionListener {
         }
 
         maze = new Maze(N_BLOCKS);
-        initflag = true;
 
         timer = new Timer(40, this); // 每0.04秒repaint
         timer.start();
@@ -259,8 +253,7 @@ public class Board extends JPanel implements ActionListener {
                 maze.data[i] = levelData[i];
             }
         }
-        
-        initflag = true;
+    
         drawpac.pacman_x = 7 * BLOCK_SIZE;
         drawpac.pacman_y = 11 * BLOCK_SIZE;
         drawpac.view_x = 0;
@@ -309,11 +302,9 @@ public class Board extends JPanel implements ActionListener {
                 
             }
             else {
-               
                 drawpac.drawPacman(g2d);
                 movePacman();
                 moveGhost(g2d);
-
             }
 
         } 
@@ -340,7 +331,6 @@ public class Board extends JPanel implements ActionListener {
             int key = e.getKeyCode();
 
             if (inGame) {
-                initflag = false;
                 if (key == KeyEvent.VK_LEFT) {
                     req_x = -1;
                     req_y = 0;       
