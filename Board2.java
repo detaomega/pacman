@@ -176,14 +176,16 @@ public class Board2 extends JPanel implements ActionListener {
             if (pacman1.pacman_x > (ghost[i].x - 15) && pacman1.pacman_x < (ghost[i].x + 15)
                     && pacman1.pacman_y > (ghost[i].y - 15) && pacman1.pacman_y < (ghost[i].y + 15)
                     && inGame) {
-
+                ghost[i].x = (i + 11) * BLOCK_SIZE;
+                ghost[i].y = 12 * BLOCK_SIZE;
                 dying_state |= 1;
             }
 
             if (pacman2.pacman_x > (ghost[i].x - 15) && pacman2.pacman_x < (ghost[i].x + 15)
                     && pacman2.pacman_y > (ghost[i].y - 15) && pacman2.pacman_y < (ghost[i].y + 15)
                     && inGame) {
-
+                ghost[i].x = (i + 11) * BLOCK_SIZE;
+                ghost[i].y = 12 * BLOCK_SIZE;
                 dying_state |= 2;
             }
         }
