@@ -23,7 +23,6 @@ public class Board2 extends JPanel implements ActionListener {
     private int[] dx, dy;
     //private Point playerpos; 
  
-    private Image pacmanup, pacmandown, pacmanleft, pacmanright;
     private Image pacmanupP2, pacmandownP2, pacmanleftP2, pacmanrightP2;
     private Image [] ghost_left;
     private Image [] ghost_right;
@@ -36,7 +35,7 @@ public class Board2 extends JPanel implements ActionListener {
     //private char p1direction;
     private boolean initflag, initflag2;
     private DrawPacman pacman1, pacman2;
-
+    private DrawGhost [] ghost;
     private int levelData[] = {
             19, 26, 26, 26, 18, 18, 18, 18, 18, 18, 18, 18, 18, 18, 22,
             21, 0, 0, 0, 17, 16, 16, 16, 16, 16, 16, 16, 16, 16, 20,
@@ -91,6 +90,7 @@ public class Board2 extends JPanel implements ActionListener {
         initflag = true;    
         initflag2 = true;
         pacman1 = new DrawPacman();
+        pacman2 = new DrawPacman();
         dying_state = 0;
         p1 = new Point(10 * BLOCK_SIZE, 11 * BLOCK_SIZE);
         p2 = new Point(4 * BLOCK_SIZE, 11 * BLOCK_SIZE);
@@ -132,13 +132,13 @@ public class Board2 extends JPanel implements ActionListener {
         g.drawString(s1, 60, SCREEN_SIZE + 20);
         g.drawString(s2, 60, SCREEN_SIZE + 40);
 
-        for (int i = 0; i < pacsLifeP1; i++) {
-            g.drawImage(pacmanleft, i * 28 + 8, SCREEN_SIZE + 3, this);
-        }
+        // for (int i = 0; i < pacsLifeP1; i++) {
+        //     g.drawImage(pacmanleft, i * 28 + 8, SCREEN_SIZE + 3, this);
+        // }
 
-        for (int i = 0; i < pacsLifeP2; i++) {
-            g.drawImage(pacmanleftP2, i * 28 + 8, SCREEN_SIZE + 25, this);
-        }
+        // for (int i = 0; i < pacsLifeP2; i++) {
+        //     g.drawImage(pacmanleftP2, i * 28 + 8, SCREEN_SIZE + 25, this);
+        // }
     }
 
     private void checkMaze() {
@@ -223,8 +223,8 @@ public class Board2 extends JPanel implements ActionListener {
                 dying_state |= 1;
             }
 
-            if (p2.x > (ghost_x[i] - 12) && p2.x < (ghost_x[i] + 12)
-                    && p2.y > (ghost_y[i] - 12) && p2.y < (ghost_y[i] + 12)
+            if (pacman2.pacman_x > (ghost_x[i] - 15) && pacman2.pacman_x < (ghost_x[i] + 15)
+                    && pacman2.pacman_y > (ghost_y[i] - 15) && pacman2.pacman_y < (ghost_y[i] + 15)
                     && inGame) {
 
                 dying_state |= 2;
@@ -288,12 +288,12 @@ public class Board2 extends JPanel implements ActionListener {
         if (p2dir.x == -p2pacmand_x && p2dir.y == -p2pacmand_y) {
             p2pacmand_x = p2dir.x;
             p2pacmand_y = p2dir.y;
-            p2view.x = p2dir.x;
-            p2view.y = p2dir.y;
+            pacman2.view_x = p2dir.x;
+            pacman2.view_y = p2dir.y;
         }
 
-        if (p2.x % BLOCK_SIZE == 0 && p2.y % BLOCK_SIZE == 0) {
-            p2pos = p2.x / BLOCK_SIZE + N_BLOCKS * (int) (p2.y / BLOCK_SIZE);
+        if (pacman2.pacman_x % BLOCK_SIZE == 0 && pacman2.pacman_y % BLOCK_SIZE == 0) {
+            p2pos = pacman2.pacman_x / BLOCK_SIZE + N_BLOCKS * (int) (pacman2.pacman_y / BLOCK_SIZE);
             p2ch = screenData[p2pos];
 
             if ((p2ch & 16) != 0) {
@@ -301,11 +301,6 @@ public class Board2 extends JPanel implements ActionListener {
                 p2score++;
             }
 
-            
-            p2pacmand_x = p2dir.x;
-            p2pacmand_y = p2dir.y;
-            p2view.x = p2dir.x;
-            p2view.y = p2dir.y;
              
 
             if (p2dir.x != 0 || p2dir.y != 0) {
@@ -315,8 +310,8 @@ public class Board2 extends JPanel implements ActionListener {
                         || (p2dir.x == 0 && p2dir.y == 1 && (p2ch & 8) != 0))) {
                     p2pacmand_x = p2dir.x;
                     p2pacmand_y = p2dir.y;
-                    p2view.x = p2dir.x;
-                    p2view.y = p2dir.y;
+                    pacman2.view_x = p2dir.x;
+                    pacman2.view_y = p2dir.y;
                 }
             }
 
@@ -328,8 +323,8 @@ public class Board2 extends JPanel implements ActionListener {
                 p2pacmand_y = 0;
             }
         }
-        p2.x = p2.x + 6 * p2pacmand_x;
-        p2.y = p2.y + 6 * p2pacmand_y;
+        pacman2.pacman_x = pacman2.pacman_x + 6 * p2pacmand_x;
+        pacman2.pacman_y = pacman2.pacman_y + 6 * p2pacmand_y;
     }
 
     private void drawPacman(Graphics2D g2d) {
@@ -337,44 +332,13 @@ public class Board2 extends JPanel implements ActionListener {
             pacman1.drawPacman(g2d);
         }
         if (pacsLifeP2 > 0) {
-            if (p2view.x == -1 && p2view.y == 0 || initflag2) {
-                drawPacnanLeftP2(g2d, p2);
-
-            } 
-            else if (p2view.x == 1 && p2view.y == 0) {
-                drawPacmanRightP2(g2d, p2);
-            } 
-            else if (p2view.x == 0 && p2view.y == -1) {
-                drawPacmanUpP2(g2d, p2);
-            } 
-            else if (p2view.x == 0 && p2view.y == 1){
-                drawPacmanDownP2(g2d, p2);
-            }
+            pacman2.drawPacman(g2d);
         }
     }
     
 
     // player two
 
-    private void drawPacmanUpP2(Graphics2D g2d, Point p) {
-        g2d.drawImage(pacmanupP2, p.x, p.y, this);    
-    
-    }
-
-    private void drawPacmanDownP2(Graphics2D g2d, Point p) {
-        g2d.drawImage(pacmandownP2, p.x, p.y, this);
-        
-    }
-
-    private void drawPacnanLeftP2(Graphics2D g2d, Point p) {
-        
-        g2d.drawImage(pacmanleftP2, p.x, p.y, this);
-        
-    }
-
-    private void drawPacmanRightP2(Graphics2D g2d, Point p) {
-        g2d.drawImage(pacmanrightP2, p.x , p.y , this);
-    }
 
 
     private void drawMaze(Graphics2D g2d) {
@@ -435,8 +399,9 @@ public class Board2 extends JPanel implements ActionListener {
         initflag2 = true;
         pacman1.pacman_x = 0 * BLOCK_SIZE;
         pacman1.pacman_y = 0 * BLOCK_SIZE;
-        p2.x = 25 * BLOCK_SIZE;
-        p2.y = 25 * BLOCK_SIZE;
+        
+        pacman2.pacman_x = 25 * BLOCK_SIZE;
+        pacman2.pacman_y = 25 * BLOCK_SIZE;
         p1pacmand_x = 0;
         p1pacmand_y = 0;
         p2pacmand_x = 0;
@@ -448,10 +413,8 @@ public class Board2 extends JPanel implements ActionListener {
         }
         pacman1.view_x = 0;
         pacman1.view_y = 0;
-        p1dir.x = 0;
-        p1dir.y = 0;
-        p2dir.x = 0;
-        p2dir.y = 0;
+        pacman2.view_x = 0;
+        pacman2.view_y = 0;
  
     }
 
@@ -459,14 +422,7 @@ public class Board2 extends JPanel implements ActionListener {
         //pacman1 = new ImageIcon("images/plyerOne/down.png").getImage();
 
         pacman1.loadImages("playerOne");
-
-        pacmanupP2 = new ImageIcon("images/playerTwo/up.png").getImage();
-    
-        pacmandownP2 = new ImageIcon("images/playerTwo/down.png").getImage();
-      
-        pacmanleftP2 = new ImageIcon("images/playerTwo/left.png").getImage();
-
-        pacmanrightP2 = new ImageIcon("images/playerTwo/right.png").getImage();
+        pacman2.loadImages("playerTwo");
 
         ghost_left[0] = new ImageIcon("images/ghostOrange/ghostOrangeLeft.jpeg").getImage();
         ghost_right[0] = new ImageIcon("images/ghostOrange/ghostOrangeRight.jpeg").getImage();
@@ -510,8 +466,8 @@ public class Board2 extends JPanel implements ActionListener {
                 pacsLifeP1--;
             }
             if ((dying_state & 2) != 0) {
-                p2.x = 25 * BLOCK_SIZE;
-                p2.y = 25 * BLOCK_SIZE;
+                pacman2.pacman_x = 25 * BLOCK_SIZE;
+                pacman2.pacman_y = 25 * BLOCK_SIZE;
                 pacsLifeP2--;
             }
             dying_state = 0;
@@ -531,7 +487,6 @@ public class Board2 extends JPanel implements ActionListener {
             int key = e.getKeyCode();
 
             if (inGame) {
-                
                 
                 if (key == KeyEvent.VK_LEFT) {
                     p1dir.x = -1;
