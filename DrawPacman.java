@@ -37,7 +37,6 @@ public class DrawPacman {
     public void drawPacman(Graphics2D g2d) {
         control = (control + 1) % 24;
         show = current_image[control];
-        System.out.println(9);
         if (view_x == -1 && view_y == 0) {
             drawPacnanLeft(g2d);
 
