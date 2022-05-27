@@ -271,7 +271,7 @@ public class Board extends JPanel implements ActionListener {
     }
 
     private void loadImages() {
-        drawpac.loadImages("playerTwo");
+        drawpac.loadImages("playerOne");
         ghost[0].loadImages("Orange");
         ghost[1].loadImages("Blue");
         ghost[2].loadImages("Red");
