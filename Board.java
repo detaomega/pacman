@@ -7,8 +7,6 @@ public class Board extends JPanel implements ActionListener {
     private Dimension d;
     private final Font smallFont = new Font("Helvetica", Font.BOLD, 14);
 
-    private Color dotColor = new Color(192, 192, 0);
-    private Color mazeColor;
 
     private boolean inGame = false;
 
@@ -19,18 +17,18 @@ public class Board extends JPanel implements ActionListener {
 
     private int pacsLeft, score;
     private int[] dx, dy;
-    //private Point playerpos; 
-    private int pacmand_x, pacmand_y;
-    private Image pacmanup, pacmandown, pacmanleft, pacmanright, pacman1;
-    
 
-    private int viewghost_x, viewghost_y;
+    private int pacmand_x, pacmand_y;
+ 
+
     private int req_x, req_y;
     private boolean initflag;
     private boolean dying;
 
     private DrawPacman drawpac;
     private DrawGhost [] ghost;
+    private Maze maze;
+
     private int levelData[] = {
             19, 26, 26, 26, 18, 18, 18, 18, 18, 18, 18, 18, 18, 18, 22,
             21, 0, 0, 0, 17, 16, 16, 16, 16, 16, 16, 16, 16, 16, 20,
@@ -71,15 +69,18 @@ public class Board extends JPanel implements ActionListener {
 
     private void initVariables() {
         screenData = new int[N_BLOCKS * N_BLOCKS];
-        mazeColor = new Color(5, 100, 5);
+
         d = new Dimension(400, 400);
         dx = new int[4];
         dy = new int[4];
+        
         drawpac = new DrawPacman();
         ghost = new DrawGhost[4];
         for (int i = 0; i < 4; i++) {
             ghost[i] = new DrawGhost();
         }
+
+        maze = new Maze(N_BLOCKS);
         initflag = true;
 
         timer = new Timer(40, this); // 每0.04秒repaint
@@ -88,7 +89,9 @@ public class Board extends JPanel implements ActionListener {
 
     private void playGame(Graphics2D g2d) {
         drawpac.drawPacman(g2d);
-        checkMaze();
+        if (maze.checkMaze()) {
+            restartgame();
+        }
     }
     
     //the fuction of showing starting screen
@@ -116,25 +119,11 @@ public class Board extends JPanel implements ActionListener {
         s = "Score: " + score;
         g.drawString(s, SCREEN_SIZE / 2 + 96, SCREEN_SIZE + 16);
 
-        for (int i = 0; i < pacsLeft; i++) {
-            g.drawImage(pacmanleft, i * 28 + 8, SCREEN_SIZE + 1, this);
-        }
+        // for (int i = 0; i < pacsLeft; i++) {
+        //     g.drawImage(pacmanleft, i * 28 + 8, SCREEN_SIZE + 1, this);
+        // }
     }
 
-    private void checkMaze() {
-        boolean finished = true;
-
-        for (int i = 0; i < N_BLOCKS * N_BLOCKS; i++) {
-            if ((screenData[i] & 48) != 0) {
-                finished = false;
-                break;
-            }
-        }
-
-        if (finished) {
-            restartgame();
-        }
-    }
 
     private void moveGhost(Graphics2D g2d) {
 
@@ -144,25 +133,25 @@ public class Board extends JPanel implements ActionListener {
                 int count = 0;
                 count = 0;
 
-                if ((screenData[pos] & 1) == 0 && ghost[i].nextx != 1) {
+                if ((maze.data[pos] & 1) == 0 && ghost[i].nextx != 1) {
                     dx[count] = -1;
                     dy[count] = 0;
                     count++;
                 }
 
-                if ((screenData[pos] & 2) == 0 && ghost[i].nexty != 1) {
+                if ((maze.data[pos] & 2) == 0 && ghost[i].nexty != 1) {
                     dx[count] = 0;
                     dy[count] = -1;
                     count++;
                 }
 
-                if ((screenData[pos] & 4) == 0 && ghost[i].nextx != -1) {
+                if ((maze.data[pos] & 4) == 0 && ghost[i].nextx != -1) {
                     dx[count] = 1;
                     dy[count] = 0;
                     count++;
                 }
 
-                if ((screenData[pos] & 8) == 0 && ghost[i].nexty != -1) {
+                if ((maze.data[pos] & 8) == 0 && ghost[i].nexty != -1) {
                     dx[count] = 0;
                     dy[count] = 1;
                     count++;
@@ -170,7 +159,7 @@ public class Board extends JPanel implements ActionListener {
 
                 if (count == 0) {
 
-                    if ((screenData[pos] & 15) == 15) {
+                    if ((maze.data[pos] & 15) == 15) {
                         ghost[i].nextx = 0;
                         ghost[i].nexty = 0;
                     } else {
@@ -220,10 +209,10 @@ public class Board extends JPanel implements ActionListener {
 
         if (drawpac.pacman_x % BLOCK_SIZE == 0 && drawpac.pacman_y % BLOCK_SIZE == 0) {
             pos = drawpac.pacman_x / BLOCK_SIZE + N_BLOCKS * (int) (drawpac.pacman_y / BLOCK_SIZE);
-            ch = screenData[pos];
+            ch = maze.data[pos];
 
             if ((ch & 16) != 0) {
-                screenData[pos] -= 16;
+                maze.data[pos] -= 16;
                 score++;
             }
 
@@ -255,40 +244,7 @@ public class Board extends JPanel implements ActionListener {
 
 
 
-    private void drawMaze(Graphics2D g2d) {
-
-        int i = 0;
-
-        for (int y = 0; y < SCREEN_SIZE; y += BLOCK_SIZE) {
-            for (int x = 0; x < SCREEN_SIZE; x += BLOCK_SIZE) {
-
-                g2d.setColor(Color.BLUE);
-                g2d.setStroke(new BasicStroke(2));
-
-                if ((screenData[i] & 1) != 0) { // 左邊界
-                    g2d.drawLine(x, y, x, y + BLOCK_SIZE - 1);
-                }
-
-                if ((screenData[i] & 2) != 0) { // 上邊界
-                    g2d.drawLine(x, y, x + BLOCK_SIZE - 1, y);
-                }
-
-                if ((screenData[i] & 4) != 0) { // 右邊界
-                    g2d.drawLine(x + BLOCK_SIZE - 1, y, x + BLOCK_SIZE - 1, y + BLOCK_SIZE - 1);
-                }
-
-                if ((screenData[i] & 8) != 0) { // 下邊界
-                    g2d.drawLine(x, y + BLOCK_SIZE - 1, x + BLOCK_SIZE - 1, y + BLOCK_SIZE - 1);
-                }
-
-                if ((screenData[i] & 16) != 0) { // 果實
-                    g2d.setColor(dotColor);
-                    g2d.fillRect(x + 11, y + 11, 2, 2);
-                }
-                i++;
-            }
-        }
-    }
+    
 
     private void initGame() {
         
@@ -300,7 +256,7 @@ public class Board extends JPanel implements ActionListener {
     private void restartgame() {
         if (dying == false) {
             for (int i = 0; i < N_BLOCKS * N_BLOCKS; i++) {
-                screenData[i] = levelData[i];
+                maze.data[i] = levelData[i];
             }
         }
         
@@ -344,7 +300,7 @@ public class Board extends JPanel implements ActionListener {
         g2d.fillRect(0, 0, d.width, d.height);
 
         playGame(g2d);
-        drawMaze(g2d);
+        maze.drawMaze(g2d);
         drawScore(g2d);
         if (inGame) {
             if (dying) {

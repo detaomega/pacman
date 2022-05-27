@@ -29,29 +29,11 @@ public class Board2 extends JPanel implements ActionListener {
     private int [] ghost_x, ghost_y, ghost_nextx, ghost_nexty; 
     private int speed[] = {4, 6, 8, 8};
     private Point p1, p2;
-    private Point p1view, p2view;
     private Point p1dir, p2dir; // 判斷方向
     //private char p1direction;
     private boolean initflag, initflag2;
     private DrawPacman pacman1, pacman2;
-    private DrawGhost [] ghost;
-    private int levelData[] = {
-            19, 26, 26, 26, 18, 18, 18, 18, 18, 18, 18, 18, 18, 18, 22,
-            21, 0, 0, 0, 17, 16, 16, 16, 16, 16, 16, 16, 16, 16, 20,
-            21, 0, 0, 0, 17, 16, 16, 16, 16, 16, 16, 16, 16, 16, 20,
-            21, 0, 0, 0, 17, 16, 16, 24, 16, 16, 16, 16, 16, 16, 20,
-            17, 18, 18, 18, 16, 16, 20, 0, 17, 16, 16, 16, 16, 16, 20,
-            17, 16, 16, 16, 16, 16, 20, 0, 17, 16, 16, 16, 16, 24, 20,
-            25, 16, 16, 16, 24, 24, 28, 0, 25, 24, 24, 16, 20, 0, 21,
-            1, 17, 16, 20, 0, 0, 0, 0, 0, 0, 0, 17, 20, 0, 21,
-            1, 17, 16, 16, 18, 18, 22, 0, 19, 18, 18, 16, 20, 0, 21,
-            1, 17, 16, 16, 16, 16, 20, 0, 17, 16, 16, 16, 20, 0, 21,
-            1, 17, 16, 16, 16, 16, 20, 0, 17, 16, 16, 16, 20, 0, 21,
-            1, 17, 16, 16, 16, 16, 16, 18, 16, 16, 16, 16, 20, 0, 21,
-            1, 17, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 20, 0, 21,
-            1, 25, 24, 24, 24, 24, 24, 24, 24, 24, 16, 16, 16, 18, 20,
-            9, 8, 8, 8, 8, 8, 8, 8, 8, 8, 25, 24, 24, 24, 28
-    };  
+    private DrawGhost [] ghost;  
     // pacman map
 
 
@@ -79,12 +61,11 @@ public class Board2 extends JPanel implements ActionListener {
         d = new Dimension(400, 400);
         dx = new int[4];
         dy = new int[4];
-        ghost_x = new int[4];
-        ghost_y = new int[4];
-        ghost_nextx = new int[4];
-        ghost_nexty = new int[4];
-        ghost_left = new Image[4];
-        ghost_right = new Image[4];
+        
+        ghost = new DrawGhost[4];
+        for (int i = 0; i < 4; i++) {
+            ghost[i] = new DrawGhost();
+        }
 
         initflag = true;    
         initflag2 = true;
@@ -95,8 +76,6 @@ public class Board2 extends JPanel implements ActionListener {
         p2 = new Point(4 * BLOCK_SIZE, 11 * BLOCK_SIZE);
         p1dir = new Point(0,0);
         p2dir = new Point(0,0);
-        p1view = new Point(0, 0);
-        p2view = new Point(0, 0);
         timer = new Timer(40, this); // 每0.04秒repaint
         timer.start();
     }
@@ -158,30 +137,30 @@ public class Board2 extends JPanel implements ActionListener {
     private void moveGhost(Graphics2D g2d) {
 
         for (int i = 0; i < 4; i++) {
-            if (ghost_x[i] % BLOCK_SIZE == 0 && ghost_y[i] % BLOCK_SIZE == 0) {
-                int pos = ghost_x[i] / BLOCK_SIZE + N_BLOCKS * (int) (ghost_y[i] / BLOCK_SIZE);
+            if (ghost[i].x % BLOCK_SIZE == 0 && ghost[i].y % BLOCK_SIZE == 0) {
+                int pos = ghost[i].x / BLOCK_SIZE + N_BLOCKS * (int) (ghost[i].y / BLOCK_SIZE);
                 int count = 0;
                 count = 0;
 
-                if ((screenData[pos] & 1) == 0 && ghost_nextx[i] != 1) {
+                if ((screenData[pos] & 1) == 0 && ghost[i].nextx != 1) {
                     dx[count] = -1;
                     dy[count] = 0;
                     count++;
                 }
 
-                if ((screenData[pos] & 2) == 0 && ghost_nexty[i] != 1) {
+                if ((screenData[pos] & 2) == 0 && ghost[i].nexty != 1) {
                     dx[count] = 0;
                     dy[count] = -1;
                     count++;
                 }
 
-                if ((screenData[pos] & 4) == 0 && ghost_nextx[i] != -1) {
+                if ((screenData[pos] & 4) == 0 && ghost[i].nextx != -1) {
                     dx[count] = 1;
                     dy[count] = 0;
                     count++;
                 }
 
-                if ((screenData[pos] & 8) == 0 && ghost_nexty[i] != -1) {
+                if ((screenData[pos] & 8) == 0 && ghost[i].nexty != -1) {
                     dx[count] = 0;
                     dy[count] = 1;
                     count++;
@@ -190,11 +169,11 @@ public class Board2 extends JPanel implements ActionListener {
                 if (count == 0) {
 
                     if ((screenData[pos] & 15) == 15) {
-                        ghost_nextx[i] = 0;
-                        ghost_nexty[i] = 0;
+                        ghost[i].nextx = 0;
+                        ghost[i].nexty = 0;
                     } else {
-                        ghost_nextx[i] = -ghost_nextx[i];
-                        ghost_nexty[i] = -ghost_nexty[i];
+                        ghost[i].nextx = -ghost[i].nextx;
+                        ghost[i].nexty = -ghost[i].nexty;
                     }
 
                 } else {
@@ -205,25 +184,24 @@ public class Board2 extends JPanel implements ActionListener {
                         count = 3;
                     }
 
-                    ghost_nextx[i] = dx[count];
-                    ghost_nexty[i] = dy[count];
+                    ghost[i].nextx = dx[count];
+                    ghost[i].nexty = dy[count];
                 }
 
             }
 
-            ghost_x[i] = ghost_x[i] + (ghost_nextx[i] * speed[i]);
-            ghost_y[i] = ghost_y[i] + (ghost_nexty[i] * speed[i]);
-            drawGhost(g2d, ghost_x[i] + 1, ghost_y[i] + 1, i);
-
-            if (pacman1.pacman_x > (ghost_x[i] - 15) && pacman1.pacman_x < (ghost_x[i] + 15)
-                    && pacman1.pacman_y > (ghost_y[i] - 15) && pacman1.pacman_y < (ghost_y[i] + 15)
+            ghost[i].x = ghost[i].x + (ghost[i].nextx * speed[i]);
+            ghost[i].y = ghost[i].y + (ghost[i].nexty * speed[i]);
+            ghost[i].drawGhost(g2d);
+            if (pacman1.pacman_x > (ghost[i].x - 15) && pacman1.pacman_x < (ghost[i].x + 15)
+                    && pacman1.pacman_y > (ghost[i].y - 15) && pacman1.pacman_y < (ghost[i].y + 15)
                     && inGame) {
 
                 dying_state |= 1;
             }
 
-            if (pacman2.pacman_x > (ghost_x[i] - 15) && pacman2.pacman_x < (ghost_x[i] + 15)
-                    && pacman2.pacman_y > (ghost_y[i] - 15) && pacman2.pacman_y < (ghost_y[i] + 15)
+            if (pacman2.pacman_x > (ghost[i].x - 15) && pacman2.pacman_x < (ghost[i].x + 15)
+                    && pacman2.pacman_y > (ghost[i].y - 15) && pacman2.pacman_y < (ghost[i].y + 15)
                     && inGame) {
 
                 dying_state |= 2;
@@ -232,14 +210,7 @@ public class Board2 extends JPanel implements ActionListener {
     }
 
 
-    private void drawGhost(Graphics2D g2d, int x, int y,int id) {
-        if (ghost_nextx[id] + ghost_nexty[id] == -1)
-            g2d.drawImage(ghost_left[id], x, y, this);
-        else 
-            g2d.drawImage(ghost_right[id], x, y, this);
-    }
-
-
+  
     private void movePacman() {
         int p1pos, p2pos, p1ch, p2ch;
 
@@ -335,11 +306,6 @@ public class Board2 extends JPanel implements ActionListener {
         }
     }
     
-
-    // player two
-
-
-
     private void drawMaze(Graphics2D g2d) {
 
         int i = 0;
@@ -352,30 +318,23 @@ public class Board2 extends JPanel implements ActionListener {
 
                 if ((screenData[i] & 1) != 0) { // 左邊界
                     g2d.drawLine(x, y, x, y + BLOCK_SIZE - 1);
-     
                 }
 
                 if ((screenData[i] & 2) != 0) { // 上邊界
                     g2d.drawLine(x, y, x + BLOCK_SIZE - 1, y);
-
                 }
 
                 if ((screenData[i] & 4) != 0) { // 右邊界
                     g2d.drawLine(x + BLOCK_SIZE - 1, y, x + BLOCK_SIZE - 1, y + BLOCK_SIZE - 1);
-
                 }
 
                 if ((screenData[i] & 8) != 0) { // 下邊界
                     g2d.drawLine(x, y + BLOCK_SIZE - 1, x + BLOCK_SIZE - 1, y + BLOCK_SIZE - 1);
-
-
                 }
 
                 if ((screenData[i] & 16) != 0) { // 果實
                     g2d.setColor(dotColor);
                     g2d.fillRect(x + 11, y + 11, 2, 2);
-
-
                 }
 
                 i++;
@@ -394,46 +353,36 @@ public class Board2 extends JPanel implements ActionListener {
     private void restartgame() {
         Get_map maps = new Get_map();
         screenData = maps.Get_data();
-        initflag = true;
-        initflag2 = true;
+
         pacman1.pacman_x = 0 * BLOCK_SIZE;
         pacman1.pacman_y = 0 * BLOCK_SIZE;
-        
         pacman2.pacman_x = 25 * BLOCK_SIZE;
         pacman2.pacman_y = 25 * BLOCK_SIZE;
+        pacman1.view_x = 0;
+        pacman1.view_y = 0;
+        pacman2.view_x = 0;
+        pacman2.view_y = 0;
+ 
         p1pacmand_x = 0;
         p1pacmand_y = 0;
         p2pacmand_x = 0;
         p2pacmand_y = 0;
         
         for (int i = 11; i < 15; i++) {
-            ghost_x[i - 11] = i * BLOCK_SIZE;
-            ghost_y[i - 11] = 12 * BLOCK_SIZE;
+            ghost[i - 11].x = i * BLOCK_SIZE;
+            ghost[i - 11].y = 12 * BLOCK_SIZE;
         }
-        pacman1.view_x = 0;
-        pacman1.view_y = 0;
-        pacman2.view_x = 0;
-        pacman2.view_y = 0;
- 
+      
     }
 
     private void loadImages() {
-        //pacman1 = new ImageIcon("images/plyerOne/down.png").getImage();
-
+       
         pacman1.loadImages("playerOne");
         pacman2.loadImages("playerTwo");
-
-        ghost_left[0] = new ImageIcon("images/ghostOrange/ghostOrangeLeft.jpeg").getImage();
-        ghost_right[0] = new ImageIcon("images/ghostOrange/ghostOrangeRight.jpeg").getImage();
-
-        ghost_left[1] = new ImageIcon("images/ghostBlue/ghostBlueLeft.jpeg").getImage();
-        ghost_right[1] = new ImageIcon("images/ghostBlue/ghostBlueRight.jpeg").getImage();
-
-        ghost_left[2] = new ImageIcon("images/ghostRED/ghostREDLeft.jpeg").getImage();
-        ghost_right[2] = new ImageIcon("images/ghostRED/ghostREDRight.jpeg").getImage();
-
-        ghost_left[3] = new ImageIcon("images/ghostPink/ghostPinkLeft.jpeg").getImage();
-        ghost_right[3] = new ImageIcon("images/ghostPink/ghostPinkRight.jpeg").getImage();
+        ghost[0].loadImages("Orange");
+        ghost[1].loadImages("Blue");
+        ghost[2].loadImages("Red");
+        ghost[3].loadImages("Pink");
 
     }
     
