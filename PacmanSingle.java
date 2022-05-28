@@ -18,9 +18,4 @@ public class PacmanSingle extends JFrame {
         setLocationRelativeTo(null);
         setVisible(true);
     }
-
-
-    public static void main(String[] args) {
-        PacmanSingle pc = new PacmanSingle();
-    }
 }

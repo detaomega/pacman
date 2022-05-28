@@ -19,8 +19,4 @@ public class PacmanDouble extends JFrame {
         setVisible(true);
     }
 
-
-    public static void main(String[] args) {
-        PacmanDouble pc = new PacmanDouble();
-    }
 }
