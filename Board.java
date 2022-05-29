@@ -157,15 +157,27 @@ public class Board extends JPanel implements ActionListener {
 
             }
 
-            ghost[i].x = ghost[i].x + (ghost[i].nextx * 6);
-            ghost[i].y = ghost[i].y + (ghost[i].nexty * 6);
+            ghost[i].x = ghost[i].x + (ghost[i].nextx * ghost[i].speed);
+            ghost[i].y = ghost[i].y + (ghost[i].nexty * ghost[i].speed);
             ghost[i].drawGhost(g2d);
-
-            if (drawpac.pacman_x > (ghost[i].x - 15) && drawpac.pacman_x < (ghost[i].x + 15)
-                    && drawpac.pacman_y > (ghost[i].y - 15) && drawpac.pacman_y < (ghost[i].y + 15)
+            if (drawpac.pacman_x > (ghost[i].x - 15) 
+                    && drawpac.pacman_x < (ghost[i].x + 15)
+                    && drawpac.pacman_y > (ghost[i].y - 15) 
+                    && drawpac.pacman_y < (ghost[i].y + 15)
                     && inGame) {
-
-                dying = true;
+                if (ghost[i].state == 0) {
+                   dying = true; 
+                }  
+                else {
+                    score += 100;
+                    try {
+                        System.out.println("started running...");
+                        Thread.sleep(200);
+                    } catch (InterruptedException e) {
+                    
+                    }
+                    ghost[i].reset();
+                }
             }
         }
     }
@@ -194,6 +206,16 @@ public class Board extends JPanel implements ActionListener {
 
             if ((ch & 32) != 0) {
                 maze.data[pos] -= 32;
+                for (int i = 0; i < 4; i++) {
+                    ghost[i].state = 1;
+                    ghost[i].change(2);
+                }
+                 try {
+                    System.out.println("started running...");
+                    Thread.sleep(200);
+                } catch (InterruptedException e) {
+                    
+                }
             }
 
             if (req_x != 0 || req_y != 0) {
@@ -218,8 +240,8 @@ public class Board extends JPanel implements ActionListener {
             }
 
         }
-        drawpac.pacman_x = drawpac.pacman_x + 6 * pacmand_x;
-        drawpac.pacman_y = drawpac.pacman_y + 6 * pacmand_y;
+        drawpac.pacman_x = drawpac.pacman_x + 3 * pacmand_x;
+        drawpac.pacman_y = drawpac.pacman_y + 3 * pacmand_y;
     }
 
     private void eatProp() {
@@ -249,6 +271,9 @@ public class Board extends JPanel implements ActionListener {
         for (int i = 0; i < 4; i++) {
             ghost[i].x = 7 * BLOCK_SIZE;
             ghost[i].y = i * BLOCK_SIZE;
+            ghost[i].ori_x = 7 * BLOCK_SIZE;
+            ghost[i].ori_y = i * BLOCK_SIZE;
+            ghost[i].speed = 3;
         }
         
         dying = false;
