@@ -14,7 +14,7 @@ public class PacmanSingle extends JFrame {
         add(bd);
         setTitle("Pacman");
         setDefaultCloseOperation(EXIT_ON_CLOSE);
-        setSize(380, 420);
+        setSize(700, 720);
         setLocationRelativeTo(null);
         setVisible(true);
     }

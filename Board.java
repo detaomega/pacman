@@ -11,7 +11,7 @@ public class Board extends JPanel implements ActionListener {
     private boolean inGame = false;
 
     private final int BLOCK_SIZE = 24;
-    private final int N_BLOCKS = 15;
+    private final int N_BLOCKS = 20;
     private final int SCREEN_SIZE = N_BLOCKS * BLOCK_SIZE;
     private final int PACMAN_SPEED = 6;
 
@@ -245,10 +245,10 @@ public class Board extends JPanel implements ActionListener {
     }
 
     private void restartgame() {
+
+        Map maps = new Map(N_BLOCKS);
         if (dying == false) {
-            for (int i = 0; i < N_BLOCKS * N_BLOCKS; i++) {
-                maze.data[i] = levelData[i];
-            }
+            maze.data = maps.Get_data("trickyMap.txt");
         }
     
         drawpac.pacman_x = 7 * BLOCK_SIZE;

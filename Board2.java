@@ -22,7 +22,7 @@ public class Board2 extends JPanel implements ActionListener {
  
 
     private int  p1pacmand_x, p1pacmand_y,p2pacmand_x, p2pacmand_y;
-    private int speed[] = {4, 6, 8, 8};
+    private int speed[] = {4, 3, 3, 4};
     private Point p1dir, p2dir; // 判斷方向
 
     private DrawPacman pacman1, pacman2;
@@ -232,8 +232,8 @@ public class Board2 extends JPanel implements ActionListener {
                 p1pacmand_y = 0;
             }
         }
-        pacman1.pacman_x = pacman1.pacman_x + 6 * p1pacmand_x;
-        pacman1.pacman_y = pacman1.pacman_y + 6 * p1pacmand_y;
+        pacman1.pacman_x = pacman1.pacman_x + 12 * p1pacmand_x;
+        pacman1.pacman_y = pacman1.pacman_y + 12 * p1pacmand_y;
 
 
         if (p2dir.x == -p2pacmand_x && p2dir.y == -p2pacmand_y) {
@@ -274,8 +274,8 @@ public class Board2 extends JPanel implements ActionListener {
                 p2pacmand_y = 0;
             }
         }
-        pacman2.pacman_x = pacman2.pacman_x + 6 * p2pacmand_x;
-        pacman2.pacman_y = pacman2.pacman_y + 6 * p2pacmand_y;
+        pacman2.pacman_x = pacman2.pacman_x + 3 * p2pacmand_x;
+        pacman2.pacman_y = pacman2.pacman_y + 3 * p2pacmand_y;
     }
 
     private void drawPacman(Graphics2D g2d) {
@@ -298,8 +298,8 @@ public class Board2 extends JPanel implements ActionListener {
     }
 
     private void restartgame() {
-        Get_map maps = new Get_map();
-        maze.data = maps.Get_data();
+        Map maps = new Map(N_BLOCKS);
+        maze.data = maps.Get_data("map1.txt");
 
         pacman1.pacman_x = 0 * BLOCK_SIZE;
         pacman1.pacman_y = 0 * BLOCK_SIZE;

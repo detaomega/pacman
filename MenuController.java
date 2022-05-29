@@ -4,7 +4,10 @@ import javafx.scene.control.RadioButton;
 import javafx.scene.control.ToggleGroup;
 import javafx.scene.control.Button;
 import javafx.scene.layout.Pane;
-
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
+import javafx.stage.Stage;
 
 public class MenuController {
 
@@ -123,7 +126,8 @@ public class MenuController {
         } else if(mode == GameMode.HARD){
             System.out.println("mode : hard");
         }
-
+        Stage stage = (Stage) ok.getScene().getWindow();
+        stage.close();
 
 
     }
