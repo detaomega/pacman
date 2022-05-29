@@ -13,9 +13,9 @@ public class PacmanSingle extends JFrame {
         Board bd = new Board();
         add(bd);
         setTitle("Pacman");
-        setDefaultCloseOperation(EXIT_ON_CLOSE);
         setSize(700, 720);
         setLocationRelativeTo(null);
         setVisible(true);
+
     }
 }
