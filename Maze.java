@@ -55,6 +55,11 @@ public class Maze {
                     g2d.setColor(dotColor);
                     g2d.fillRect(x + 11, y + 11, 2, 2);
                 }
+
+                if ((data[i] & 32) != 0) {
+                    g2d.setColor(Color.WHITE);
+                    g2d.fillOval(x + 6, y + 6, 12, 12);
+                }
                 i++;
             }
         }

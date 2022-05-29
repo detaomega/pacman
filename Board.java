@@ -192,6 +192,10 @@ public class Board extends JPanel implements ActionListener {
                 score++;
             }
 
+            if ((ch & 32) != 0) {
+                maze.data[pos] -= 32;
+            }
+
             if (req_x != 0 || req_y != 0) {
                 if (!((req_x == -1 && req_y == 0 && (ch & 1) != 0)
                         || (req_x == 1 && req_y == 0 && (ch & 4) != 0)
@@ -234,8 +238,8 @@ public class Board extends JPanel implements ActionListener {
             maze.data = maps.Get_data("map.txt");
         }
     
-        drawpac.pacman_x = 1 * BLOCK_SIZE;
-        drawpac.pacman_y = 2 * BLOCK_SIZE;
+        drawpac.pacman_x = 0 * BLOCK_SIZE;
+        drawpac.pacman_y = 0 * BLOCK_SIZE;
         drawpac.view_x = 0;
         drawpac.view_y = 1;
         pacmand_x = 0;

@@ -110,7 +110,6 @@ public class Map {
         int temp = 0;
         int now = 0;
         String s = readfile(mapName);
-        System.out.print(s);
       
         for (int i = 0; i < N_BLOCKS; i++) {
             for (int j = 0; j < N_BLOCKS; j++) {
@@ -119,20 +118,23 @@ public class Map {
         }
         for (int i = 0; i < N_BLOCKS; i++) {
             for (int j = 0; j < N_BLOCKS; j++) {
-                if (i == 0 || (map[i - 1][j] + map[i][j]) == 1) {
+                if (i == 0 || (map[i - 1][j] == 1 && map[i][j] != 1) || (map[i - 1][j] != 1 && map[i][j] == 1)) {
                     data[temp] += 2;
                 }
-                if (j == 0 || (map[i][j - 1] + map[i][j]) == 1) {
+                if (j == 0 || (map[i][j - 1] == 1 && map[i][j] != 1) || (map[i][j - 1] != 1 && map[i][j] == 1)) {
                     data[temp] += 1;
                 }
-                if (i == N_BLOCKS - 1 || (map[i + 1][j] + map[i][j]) == 1) {
+                if (i == N_BLOCKS - 1 || (map[i + 1][j] == 1 && map[i][j] != 1) || (map[i + 1][j] != 1 && map[i][j] == 1)) {
                     data[temp] += 8;
                 }
-                if (j == N_BLOCKS - 1 || (map[i][j + 1] + map[i][j]) == 1) {
+                if (j == N_BLOCKS - 1 || (map[i][j + 1] == 1 && map[i][j] != 1) || (map[i][j + 1] != 1 && map[i][j] == 1)) {
                     data[temp] += 4;
                 }
                 if (map[i][j] == 0) {
                     data[temp] += 16;
+                }
+                if (map[i][j] == 3) {
+                    data[temp] += 32;
                 }
                 temp = temp + 1;
            
