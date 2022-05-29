@@ -5,18 +5,26 @@ import java.util.Random;
 import java.util.Scanner;
 import java.io.*;
 
-public class Get_map {
+public class Map {
     
-    private final int N_BLOCKS = 26;
-    private final int DATA_SIZE = N_BLOCKS * N_BLOCKS;
+    private int N_BLOCKS;
+    private int DATA_SIZE;
     
-    int [][] visit = new int [N_BLOCKS][N_BLOCKS];
-    int [][] map = new int [N_BLOCKS][N_BLOCKS]; 
+    int [][] visit;
+    int [][] map;
     
-    int [] data = new int [DATA_SIZE];
+    int [] data;
     int [] dx = {-1, 1, 0, 0};
     int [] dy = {0, 0, -1, 1};
     
+    public Map(int N_BLOCKS) {
+        this.N_BLOCKS = N_BLOCKS;
+        DATA_SIZE = N_BLOCKS * N_BLOCKS;
+        visit = new int [N_BLOCKS][N_BLOCKS];
+        map = new int [N_BLOCKS][N_BLOCKS]; 
+        data = new int [DATA_SIZE];
+    }
+
     private void init() {
         for (int i = 0; i < N_BLOCKS; i++) {
             for (int j = 0; j < N_BLOCKS; j++) {
@@ -98,10 +106,10 @@ public class Get_map {
         return data;
     }
 
-    public int[] Get_data() {
+    public int[] Get_data(String mapName) {
         int temp = 0;
         int now = 0;
-        String s = readfile("map.txt");
+        String s = readfile(mapName);
         System.out.print(s);
       
         for (int i = 0; i < N_BLOCKS; i++) {
