@@ -8,10 +8,10 @@ public class Board extends JPanel implements ActionListener {
     private final Font smallFont = new Font("Helvetica", Font.BOLD, 14);
 
 
-    private boolean inGame = false;
+    private boolean inGame = false, endgame = false;
 
     private final int BLOCK_SIZE = 24;
-    private final int N_BLOCKS = 20;
+    private final int N_BLOCKS = 26;
     private final int SCREEN_SIZE = N_BLOCKS * BLOCK_SIZE;
     private final int PACMAN_SPEED = 6;
 
@@ -27,25 +27,8 @@ public class Board extends JPanel implements ActionListener {
     private DrawGhost [] ghost;
     private Maze maze;
 
-    private int levelData[] = {
-            19, 26, 26, 26, 18, 18, 18, 18, 18, 18, 18, 18, 18, 18, 22,
-            21, 0, 0, 0, 17, 16, 16, 16, 16, 16, 16, 16, 16, 16, 20,
-            21, 0, 0, 0, 17, 16, 16, 16, 16, 16, 16, 16, 16, 16, 20,
-            21, 0, 0, 0, 17, 16, 16, 24, 16, 16, 16, 16, 16, 16, 20,
-            17, 18, 18, 18, 16, 16, 20, 0, 17, 16, 16, 16, 16, 16, 20,
-            17, 16, 16, 16, 16, 16, 20, 0, 17, 16, 16, 16, 16, 24, 20,
-            25, 16, 16, 16, 24, 24, 28, 0, 25, 24, 24, 16, 20, 0, 21,
-            1, 17, 16, 20, 0, 0, 0, 0, 0, 0, 0, 17, 20, 0, 21,
-            1, 17, 16, 16, 18, 18, 22, 0, 19, 18, 18, 16, 20, 0, 21,
-            1, 17, 16, 16, 16, 16, 20, 0, 17, 16, 16, 16, 20, 0, 21,
-            1, 17, 16, 16, 16, 16, 20, 0, 17, 16, 16, 16, 20, 0, 21,
-            1, 17, 16, 16, 16, 16, 16, 18, 16, 16, 16, 16, 20, 0, 21,
-            1, 17, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 20, 0, 21,
-            1, 25, 24, 24, 24, 24, 24, 24, 24, 24, 16, 16, 16, 18, 20,
-            9, 8, 8, 8, 8, 8, 8, 8, 8, 8, 25, 24, 24, 24, 28
-    };  
-
-
+    private Ice ice;
+  
     private Timer timer;
 
     // constructor
@@ -55,14 +38,14 @@ public class Board extends JPanel implements ActionListener {
         initBoard();
     }
 
-    private void initBoard() {
+    public void initBoard() {
         addKeyListener(new TAdapter());
         setFocusable(true);
         setBackground(Color.black);
     }
 
 
-    private void initVariables() {
+    public void initVariables() {
 
 
         d = new Dimension(400, 400);
@@ -74,9 +57,9 @@ public class Board extends JPanel implements ActionListener {
         for (int i = 0; i < 4; i++) {
             ghost[i] = new DrawGhost();
         }
-
+        
+        ice = new Ice();
         maze = new Maze(N_BLOCKS);
-
         timer = new Timer(40, this); // 每0.04秒repaint
         timer.start();
     }
@@ -115,12 +98,11 @@ public class Board extends JPanel implements ActionListener {
 
         // for (int i = 0; i < pacsLeft; i++) {
         //     g.drawImage(pacmanleft, i * 28 + 8, SCREEN_SIZE + 1, this);
-        // }
+        // }x
     }
 
 
     private void moveGhost(Graphics2D g2d) {
-
         for (int i = 0; i < 4; i++) {
             if (ghost[i].x % BLOCK_SIZE == 0 && ghost[i].y % BLOCK_SIZE == 0) {
                 int pos = ghost[i].x / BLOCK_SIZE + N_BLOCKS * (int) (ghost[i].y / BLOCK_SIZE);
@@ -236,9 +218,10 @@ public class Board extends JPanel implements ActionListener {
         drawpac.pacman_y = drawpac.pacman_y + 6 * pacmand_y;
     }
 
+    private void eatProp() {
 
+    }
     private void initGame() {
-        
         pacsLeft = 3;
         score = 0;
         restartgame();
@@ -248,11 +231,11 @@ public class Board extends JPanel implements ActionListener {
 
         Map maps = new Map(N_BLOCKS);
         if (dying == false) {
-            maze.data = maps.Get_data("trickyMap.txt");
+            maze.data = maps.Get_data("map.txt");
         }
     
-        drawpac.pacman_x = 7 * BLOCK_SIZE;
-        drawpac.pacman_y = 11 * BLOCK_SIZE;
+        drawpac.pacman_x = 1 * BLOCK_SIZE;
+        drawpac.pacman_y = 2 * BLOCK_SIZE;
         drawpac.view_x = 0;
         drawpac.view_y = 1;
         pacmand_x = 0;
@@ -289,22 +272,22 @@ public class Board extends JPanel implements ActionListener {
         g2d.setColor(Color.black);
         g2d.fillRect(0, 0, d.width, d.height);
 
-        playGame(g2d);
-        maze.drawMaze(g2d);
-        drawScore(g2d);
+        
         if (inGame) {
-            if (dying) {
-
-                death();
-                
-            }
-            else {
-                drawpac.drawPacman(g2d);
-                movePacman();
-                moveGhost(g2d);
-            }
+            playGame(g2d);
+            maze.drawMaze(g2d);
+            drawScore(g2d);
+            ice.drawIce(g2d);
+            drawpac.drawPacman(g2d);
+            movePacman();
+            moveGhost(g2d);
+            death();
 
         } 
+        else if (endgame == true) {
+            GameOver game = new GameOver();
+            game.showImage(g2d);
+        }
         else {
             showIntroScreen(g2d);
         }
@@ -312,10 +295,11 @@ public class Board extends JPanel implements ActionListener {
     }
 
     private void death() {
-
+        if (dying == false) return;
         pacsLeft--;
 
         if (pacsLeft == 0) {
+            endgame = true;
             inGame = false;
         }
         restartgame();
