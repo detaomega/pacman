@@ -70,6 +70,10 @@ public class Ghost {
             g2d.drawImage(weak2[control], x, y, null);
             timer();
         }
+        else if (state == 3) {
+            g2d.drawImage(eye, x, y, null);
+            reset();
+        }
         else if (nextx == -1 && nexty == 0)
             g2d.drawImage(ghostleft[control], x, y, null);
         else if (nextx == 0 && nexty == -1) 
@@ -88,10 +92,12 @@ public class Ghost {
     }
     
     public void reset() {
-        x = ori_x;
-        y = ori_y;
-        count = 0;
-        state = 0;
-        change(3);
+        if (x == ori_x && y == ori_y && state == 3) {
+            x = ori_x;
+            y = ori_y;
+            count = 0;
+            state = 0;
+            change(3);
+        }
     }
 }

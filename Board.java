@@ -156,8 +156,16 @@ public class Board extends JPanel implements ActionListener {
                 }
                 */
                 // if (ghost[i].state == 0)
-                int next = path.next((int) ghost[i].x / BLOCK_SIZE, (int) (ghost[i].y / BLOCK_SIZE), ghost[i].state);
-
+                int next;
+                if (ghost[i].state == 3) {
+                    Path recover = new Path(N_BLOCKS);
+                    recover.loadMap("map.txt");
+                    recover.update((int) ghost[i].ori_x / BLOCK_SIZE, (int) (ghost[i].ori_y / BLOCK_SIZE));
+                    next = recover.next((int) ghost[i].x / BLOCK_SIZE, (int) (ghost[i].y / BLOCK_SIZE), ghost[i].state);
+                }
+                else {
+                    next = path.next((int) ghost[i].x / BLOCK_SIZE, (int) (ghost[i].y / BLOCK_SIZE), ghost[i].state);
+                } 
                 ghost[i].nextx = dx[next]; 
                 ghost[i].nexty = dy[next];
             }
@@ -169,7 +177,7 @@ public class Board extends JPanel implements ActionListener {
                     && drawpac.pacman_x < (ghost[i].x + 15)
                     && drawpac.pacman_y > (ghost[i].y - 15) 
                     && drawpac.pacman_y < (ghost[i].y + 15)
-                    && inGame) {
+                    && inGame && ghost[i].state != 3) {
                 if (ghost[i].state == 0) {
                    dying = true; 
                 }  
@@ -180,7 +188,8 @@ public class Board extends JPanel implements ActionListener {
                     } catch (InterruptedException e) {
                     
                     }
-                    ghost[i].reset();
+                    ghost[i].state = 3;
+                    ghost[i].change(8);
                 }
             }
         }

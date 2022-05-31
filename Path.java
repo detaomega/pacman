@@ -45,12 +45,6 @@ public class Path {
 
     private int bestAction(int x, int y) {
         bfs.bfs(pac_x, pac_y);
-        for (int i = 0; i < N_BLOCKS; i++) {
-            for (int j = 0; j < N_BLOCKS; j++) {
-                System.out.print(bfs.distance[i][j]);
-            }
-            System.out.println();
-        }
         int best_Action = N_BLOCKS * N_BLOCKS;
         int []choose = new int[4];
         int count = 0;
@@ -91,7 +85,7 @@ public class Path {
     }
 
     public int next(int x, int y, int state) {
-        if (state == 0) return bestAction(x, y);
+        if (state == 0 || state == 3) return bestAction(x, y);
         else return worstAction(x, y);
     }
 

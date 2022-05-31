@@ -17,12 +17,6 @@ public class Bfs {
         this.N_BLOCKS = N_BLOCKS;
         this.map = map;
         distance = new int[N_BLOCKS][N_BLOCKS];
-        for (int i = 0; i < N_BLOCKS; i++) {
-            for (int j = 0; j < N_BLOCKS; j++) {
-                System.out.print(map[i][j]);
-            }
-            System.out.println();
-        }
     }
 
     private void init() {
