@@ -11,7 +11,7 @@ public class Player {
     private Image [] pacmanleft = new Image[5];
     private Image [] pacmanright = new Image[5];
     public int view_x, view_y, pacman_x, pacman_y, speed;
-    private int control = 0, current_image[] = {0, 0, 1, 1, 2, 2, 3, 3, 4, 4, 3, 3, 2, 2, 1, 1, 0, 0}, show = 0;
+    private int control = 0, current_image[] = {0, 1, 2, 3, 4, 3, 2, 1}, show = 0;
 
     public Player(String s) {
         pacmanup[0] = new ImageIcon("images/" + s + "/up1.png").getImage();
@@ -37,7 +37,7 @@ public class Player {
     }
 
     public void drawPacman(Graphics2D g2d) {
-        control = (control + 1) % 18;
+        control = (control + 1) % 8;
         show = current_image[control];
         if (view_x == -1 && view_y == 0) {
             g2d.drawImage(pacmanleft[show], pacman_x, pacman_y, null);

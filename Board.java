@@ -65,7 +65,6 @@ public class Board extends JPanel implements ActionListener {
     }
 
     private void playGame(Graphics2D g2d) {
-        player1.drawPacman(g2d);
         if (maze.checkMaze()) {
             restartgame();
         }
@@ -182,6 +181,11 @@ public class Board extends JPanel implements ActionListener {
                     && inGame && ghost[i].state != 3) {
                 if (ghost[i].state == 0) {
                    dying = true; 
+                   try {
+                        Thread.sleep(400);
+                    } catch (InterruptedException e) {
+                    
+                    }
                 }  
                 else {
                     score += 100;
@@ -198,7 +202,7 @@ public class Board extends JPanel implements ActionListener {
     }
 
 
-    private void movePacman() {
+    private void movePacman(Graphics2D g2d) {
         int pos, ch;
 
         if (req_x == 0 && req_y == 0) return;
@@ -322,8 +326,8 @@ public class Board extends JPanel implements ActionListener {
             maze.drawMaze(g2d);
             drawScore(g2d);
             ice.drawIce(g2d);
+            movePacman(g2d);
             player1.drawPacman(g2d);
-            movePacman();
             moveGhost(g2d);
             death();
 

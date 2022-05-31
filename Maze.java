@@ -10,9 +10,8 @@ public class Maze {
     private Color mazeColor = new Color(5, 100, 5);
     private int BLOCK_SIZE = 24, N_BLOCKS;
     public int []data = new int[30 * 30];
-    
+    private int count = 0;
     public boolean checkMaze() {
-   
         for (int i = 0; i < N_BLOCKS * N_BLOCKS; i++) {
             if ((data[i] & 48) != 0) {
                 return false;
@@ -56,12 +55,13 @@ public class Maze {
                     g2d.fillRect(x + 11, y + 11, 2, 2);
                 }
 
-                if ((data[i] & 32) != 0) {
+                if ((data[i] & 32) != 0 && count % 6 <= 2) {
                     g2d.setColor(Color.WHITE);
                     g2d.fillOval(x + 6, y + 6, 12, 12);
                 }
                 i++;
             }
         }
+        count++;
     }
 }
