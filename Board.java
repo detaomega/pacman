@@ -24,7 +24,7 @@ public class Board extends JPanel implements ActionListener {
     private int req_x, req_y;
     private boolean dying;
 
-    private DrawPacman drawpac;
+    private Player player1;
     private Ghost [] ghost;
     private Path path;
     private Maze maze;
@@ -53,7 +53,7 @@ public class Board extends JPanel implements ActionListener {
         d = new Dimension(400, 400);
   
         
-        drawpac = new DrawPacman();
+        player1 = new Player("playerOne");
         ghost = new Ghost[4];
         for (int i = 0; i < 4; i++) {
             ghost[i] = new Ghost();
@@ -65,7 +65,7 @@ public class Board extends JPanel implements ActionListener {
     }
 
     private void playGame(Graphics2D g2d) {
-        drawpac.drawPacman(g2d);
+        player1.drawPacman(g2d);
         if (maze.checkMaze()) {
             restartgame();
         }
@@ -103,80 +103,82 @@ public class Board extends JPanel implements ActionListener {
 
 
     private void moveGhost(Graphics2D g2d) {
-        for (int i = 0; i < 1; i++) {
+        for (int i = 0; i < 4; i++) {
             if (ghost[i].x % BLOCK_SIZE == 0 && ghost[i].y % BLOCK_SIZE == 0) {
                 int pos = ghost[i].x / BLOCK_SIZE + N_BLOCKS * (int) (ghost[i].y / BLOCK_SIZE);
                 int count = 0;
                 count = 0;
-                
-                /*
-                if ((maze.data[pos] & 1) == 0 && ghost[i].nextx != 1) {
-                    dx[count] = -1;
-                    dy[count] = 0;
-                    count++;
-                }
-
-                if ((maze.data[pos] & 2) == 0 && ghost[i].nexty != 1) {
-                    dx[count] = 0;
-                    dy[count] = -1;
-                    count++;
-                }
-
-                if ((maze.data[pos] & 4) == 0 && ghost[i].nextx != -1) {
-                    dx[count] = 1;
-                    dy[count] = 0;
-                    count++;
-                }
-
-                if ((maze.data[pos] & 8) == 0 && ghost[i].nexty != -1) {
-                    dx[count] = 0;
-                    dy[count] = 1;
-                    count++;
-                }
-
-                if (count == 0) {
-
-                    if ((maze.data[pos] & 15) == 15) {
-                        ghost[i].nextx = 0;
-                        ghost[i].nexty = 0;
-                    } else {
-                        ghost[i].nextx = -ghost[i].nextx;
-                        ghost[i].nexty = -ghost[i].nexty;
-                    }
-                } else {
-
-                    count = (int) (Math.random() * count);
-
-                    if (count > 3) {
-                        count = 3;
-                    }
-
-                    ghost[i].nextx = dx[count];
-                    ghost[i].nexty = dy[count];
-                }
-                */
-                // if (ghost[i].state == 0)
-                int next;
                 if (ghost[i].state == 3) {
+                    int next = 0;
                     Path recover = new Path(N_BLOCKS);
                     recover.loadMap("map.txt");
                     recover.update((int) ghost[i].ori_x / BLOCK_SIZE, (int) (ghost[i].ori_y / BLOCK_SIZE));
                     next = recover.next((int) ghost[i].x / BLOCK_SIZE, (int) (ghost[i].y / BLOCK_SIZE), ghost[i].state);
+                    ghost[i].nextx = dx[next]; 
+                    ghost[i].nexty = dy[next];
+                }
+                else if (i >= 1) {
+                    int []randomx = new int[4];
+                    int []randomy = new int[4];
+                    if ((maze.data[pos] & 1) == 0 && ghost[i].nextx != 1) {
+                        randomx[count] = -1;
+                        randomy[count] = 0;
+                        count++;
+                    }
+
+                    if ((maze.data[pos] & 2) == 0 && ghost[i].nexty != 1) {
+                        randomx[count] = 0;
+                        randomy[count] = -1;
+                        count++;
+                    }
+
+                    if ((maze.data[pos] & 4) == 0 && ghost[i].nextx != -1) {
+                        randomx[count] = 1;
+                        randomy[count] = 0;
+                        count++;
+                    }
+
+                    if ((maze.data[pos] & 8) == 0 && ghost[i].nexty != -1) {
+                        randomx[count] = 0;
+                        randomy[count] = 1;
+                        count++;
+                    }
+
+                    if (count == 0) {
+
+                        if ((maze.data[pos] & 15) == 15) {
+                            ghost[i].nextx = 0;
+                            ghost[i].nexty = 0;
+                        } else {
+                            ghost[i].nextx = -ghost[i].nextx;
+                            ghost[i].nexty = -ghost[i].nexty;
+                        }
+                    } else {
+
+                        count = (int) (Math.random() * count);
+
+                        if (count > 3) {
+                            count = 3;
+                        }
+
+                        ghost[i].nextx = randomx[count];
+                        ghost[i].nexty = randomy[count];
+                    }
                 }
                 else {
-                    next = path.next((int) ghost[i].x / BLOCK_SIZE, (int) (ghost[i].y / BLOCK_SIZE), ghost[i].state);
-                } 
-                ghost[i].nextx = dx[next]; 
-                ghost[i].nexty = dy[next];
+                    int next = path.next((int) ghost[i].x / BLOCK_SIZE, (int) (ghost[i].y / BLOCK_SIZE), ghost[i].state);
+                    ghost[i].nextx = dx[next]; 
+                    ghost[i].nexty = dy[next];
+                }
             }
 
             ghost[i].x = ghost[i].x + (ghost[i].nextx * ghost[i].speed);
             ghost[i].y = ghost[i].y + (ghost[i].nexty * ghost[i].speed);
             ghost[i].drawGhost(g2d);
-            if (drawpac.pacman_x > (ghost[i].x - 15) 
-                    && drawpac.pacman_x < (ghost[i].x + 15)
-                    && drawpac.pacman_y > (ghost[i].y - 15) 
-                    && drawpac.pacman_y < (ghost[i].y + 15)
+            if (player1.pacman_x > (ghost[i].x - 18) 
+                    && player1.pacman_x < (ghost[i].x + 18)
+                    && player1.pacman_y > (ghost[i].y - 18) 
+                    && player1.pacman_y < (ghost[i].y + 18)
                     && inGame && ghost[i].state != 3) {
                 if (ghost[i].state == 0) {
                    dying = true; 
@@ -204,13 +206,12 @@ public class Board extends JPanel implements ActionListener {
         if (req_x == -pacmand_x && req_y == -pacmand_y) {
             pacmand_x = req_x;
             pacmand_y = req_y;
-            drawpac.view_x = pacmand_x;
-            drawpac.view_y = pacmand_y;
+            player1.view_x = pacmand_x;
+            player1.view_y = pacmand_y;
         }
-
-        if (drawpac.pacman_x % BLOCK_SIZE == 0 && drawpac.pacman_y % BLOCK_SIZE == 0) {
-            pos = drawpac.pacman_x / BLOCK_SIZE + N_BLOCKS * (int) (drawpac.pacman_y / BLOCK_SIZE);
-            path.update((int) drawpac.pacman_x / BLOCK_SIZE, (int) (drawpac.pacman_y / BLOCK_SIZE));
+ 
+        if (player1.pacman_x % BLOCK_SIZE == 0 && player1.pacman_y % BLOCK_SIZE == 0) {
+            pos = player1.pacman_x / BLOCK_SIZE + N_BLOCKS * (int) (player1.pacman_y / BLOCK_SIZE);
             ch = maze.data[pos]; 
 
             if ((ch & 16) != 0) {
@@ -238,8 +239,8 @@ public class Board extends JPanel implements ActionListener {
                         || (req_x == 0 && req_y == 1 && (ch & 8) != 0))) {
                     pacmand_x = req_x;
                     pacmand_y = req_y;
-                    drawpac.view_x = req_x;
-                    drawpac.view_y = req_y;
+                    player1.view_x = req_x;
+                    player1.view_y = req_y;
                 }
             }
 
@@ -253,8 +254,9 @@ public class Board extends JPanel implements ActionListener {
             }
 
         }
-        drawpac.pacman_x = drawpac.pacman_x + 3 * pacmand_x;
-        drawpac.pacman_y = drawpac.pacman_y + 3 * pacmand_y;
+        player1.pacman_x = player1.pacman_x + 3 * pacmand_x;
+        player1.pacman_y = player1.pacman_y + 3 * pacmand_y;
+        path.update((int) player1.pacman_x / BLOCK_SIZE, (int) (player1.pacman_y / BLOCK_SIZE));
     }
 
     private void initGame() {
@@ -271,28 +273,29 @@ public class Board extends JPanel implements ActionListener {
         }
         path = new Path(N_BLOCKS);
         path.loadMap("map.txt");
-        drawpac.pacman_x = 0 * BLOCK_SIZE;
-        drawpac.pacman_y = 0 * BLOCK_SIZE;
+        player1.pacman_x = 0 * BLOCK_SIZE;
+        player1.pacman_y = 0 * BLOCK_SIZE;
         path.update(0, 0);
-        drawpac.view_x = 0;
-        drawpac.view_y = 1;
+        player1.view_x = 0;
+        player1.view_y = 1;
         pacmand_x = 0;
         pacmand_y = 0;
         req_x = 0;
         req_y = 0;
-        for (int i = 0; i < 1; i++) {
-            ghost[i].x = 7 * BLOCK_SIZE;
-            ghost[i].y = i * BLOCK_SIZE;
-            ghost[i].ori_x = 7 * BLOCK_SIZE;
-            ghost[i].ori_y = i * BLOCK_SIZE;
-            ghost[i].speed = 3;
+        for (int i = 11; i < 15; i++) {
+            ghost[i - 11].x = i * BLOCK_SIZE;
+            ghost[i - 11].y = 12 * BLOCK_SIZE;
+            ghost[i - 11].ori_x = i * BLOCK_SIZE;
+            ghost[i - 11].ori_y = 12 * BLOCK_SIZE;
+            ghost[i - 11].state = 0;
+    
+            ghost[i - 11].speed = 3;
         }
         
         dying = false;
     }
 
     private void loadImages() {
-        drawpac.loadImages("playerOne");
         ghost[0].loadImages("Orange");
         ghost[1].loadImages("Blue");
         ghost[2].loadImages("Red");
@@ -319,7 +322,7 @@ public class Board extends JPanel implements ActionListener {
             maze.drawMaze(g2d);
             drawScore(g2d);
             ice.drawIce(g2d);
-            drawpac.drawPacman(g2d);
+            player1.drawPacman(g2d);
             movePacman();
             moveGhost(g2d);
             death();

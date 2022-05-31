@@ -4,16 +4,16 @@ import javax.swing.*;
 
 
 
-public class DrawPacman {
+public class Player {
 
     private Image [] pacmanup = new Image[5];
     private Image [] pacmandown = new Image[5];
     private Image [] pacmanleft = new Image[5];
     private Image [] pacmanright = new Image[5];
-    public int view_x, view_y, pacman_x, pacman_y;
+    public int view_x, view_y, pacman_x, pacman_y, speed;
     private int control = 0, current_image[] = {0, 0, 1, 1, 2, 2, 3, 3, 4, 4, 3, 3, 2, 2, 1, 1, 0, 0}, show = 0;
 
-    public void loadImages(String s) {
+    public Player(String s) {
         pacmanup[0] = new ImageIcon("images/" + s + "/up1.png").getImage();
         pacmanup[1] = new ImageIcon("images/" + s + "/up1.png").getImage();
         pacmanup[2] = new ImageIcon("images/" + s + "/up2.png").getImage();
@@ -54,6 +54,12 @@ public class DrawPacman {
         else if (view_x == 0 && view_y == 0) {
             g2d.drawImage(pacmanleft[0], pacman_x, pacman_y, null);
         }
+    }
+
+    public void change(int newSpeed) {
+        pacman_x = pacman_x / (newSpeed) * newSpeed;
+        pacman_y = pacman_y / (newSpeed) * newSpeed;
+        speed = newSpeed;
     }
  
 }

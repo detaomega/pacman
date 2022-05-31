@@ -25,7 +25,7 @@ public class Board2 extends JPanel implements ActionListener {
     private int speed[] = {4, 3, 3, 4};
     private Point p1dir, p2dir; // 判斷方向
 
-    private DrawPacman pacman1, pacman2;
+    private Player player1, player2;
     private Ghost [] ghost;  
     private Maze maze;
     // pacman map
@@ -63,8 +63,8 @@ public class Board2 extends JPanel implements ActionListener {
         
         p1dir = new Point(0, 0);
         p2dir = new Point(0, 0);
-        pacman1 = new DrawPacman();
-        pacman2 = new DrawPacman();
+        player1 = new Player("playerOne");
+        player2 = new Player("playerTwo");
         dying_state = 0;
         timer = new Timer(40, this); // 每0.04秒repaint
         timer.start();
@@ -173,16 +173,16 @@ public class Board2 extends JPanel implements ActionListener {
             ghost[i].x = ghost[i].x + (ghost[i].nextx * speed[i]);
             ghost[i].y = ghost[i].y + (ghost[i].nexty * speed[i]);
             ghost[i].drawGhost(g2d);
-            if (pacman1.pacman_x > (ghost[i].x - 15) && pacman1.pacman_x < (ghost[i].x + 15)
-                    && pacman1.pacman_y > (ghost[i].y - 15) && pacman1.pacman_y < (ghost[i].y + 15)
+            if (player1.pacman_x > (ghost[i].x - 15) && player1.pacman_x < (ghost[i].x + 15)
+                    && player1.pacman_y > (ghost[i].y - 15) && player1.pacman_y < (ghost[i].y + 15)
                     && inGame) {
                 ghost[i].x = (i + 11) * BLOCK_SIZE;
                 ghost[i].y = 12 * BLOCK_SIZE;
                 dying_state |= 1;
             }
 
-            if (pacman2.pacman_x > (ghost[i].x - 15) && pacman2.pacman_x < (ghost[i].x + 15)
-                    && pacman2.pacman_y > (ghost[i].y - 15) && pacman2.pacman_y < (ghost[i].y + 15)
+            if (player2.pacman_x > (ghost[i].x - 15) && player2.pacman_x < (ghost[i].x + 15)
+                    && player2.pacman_y > (ghost[i].y - 15) && player2.pacman_y < (ghost[i].y + 15)
                     && inGame) {
                 ghost[i].x = (i + 11) * BLOCK_SIZE;
                 ghost[i].y = 12 * BLOCK_SIZE;
@@ -199,12 +199,12 @@ public class Board2 extends JPanel implements ActionListener {
         if (p1dir.x == -p1pacmand_x && p1dir.y == -p1pacmand_y) {
             p1pacmand_x = p1dir.x;
             p1pacmand_y = p1dir.y;
-            pacman1.view_x = p1dir.x;
-            pacman1.view_y = p1dir.y;
+            player1.view_x = p1dir.x;
+            player1.view_y = p1dir.y;
         }
 
-        if (pacman1.pacman_x % BLOCK_SIZE == 0 && pacman1.pacman_y % BLOCK_SIZE == 0) {
-            p1pos = pacman1.pacman_x / BLOCK_SIZE + N_BLOCKS * (int) (pacman1.pacman_y / BLOCK_SIZE);
+        if (player1.pacman_x % BLOCK_SIZE == 0 && player1.pacman_y % BLOCK_SIZE == 0) {
+            p1pos = player1.pacman_x / BLOCK_SIZE + N_BLOCKS * (int) (player1.pacman_y / BLOCK_SIZE);
             p1ch = maze.data[p1pos];
 
             if ((p1ch & 16) != 0) {
@@ -219,8 +219,8 @@ public class Board2 extends JPanel implements ActionListener {
                         || (p1dir.x == 0 && p1dir.y == 1 && (p1ch & 8) != 0))) {
                     p1pacmand_x = p1dir.x;
                     p1pacmand_y = p1dir.y;
-                    pacman1.view_x = p1dir.x;
-                    pacman1.view_y = p1dir.y;
+                    player1.view_x = p1dir.x;
+                    player1.view_y = p1dir.y;
                 }
             }
 
@@ -232,19 +232,19 @@ public class Board2 extends JPanel implements ActionListener {
                 p1pacmand_y = 0;
             }
         }
-        pacman1.pacman_x = pacman1.pacman_x + 12 * p1pacmand_x;
-        pacman1.pacman_y = pacman1.pacman_y + 12 * p1pacmand_y;
+        player1.pacman_x = player1.pacman_x + 12 * p1pacmand_x;
+        player1.pacman_y = player1.pacman_y + 12 * p1pacmand_y;
 
 
         if (p2dir.x == -p2pacmand_x && p2dir.y == -p2pacmand_y) {
             p2pacmand_x = p2dir.x;
             p2pacmand_y = p2dir.y;
-            pacman2.view_x = p2dir.x;
-            pacman2.view_y = p2dir.y;
+            player2.view_x = p2dir.x;
+            player2.view_y = p2dir.y;
         }
 
-        if (pacman2.pacman_x % BLOCK_SIZE == 0 && pacman2.pacman_y % BLOCK_SIZE == 0) {
-            p2pos = pacman2.pacman_x / BLOCK_SIZE + N_BLOCKS * (int) (pacman2.pacman_y / BLOCK_SIZE);
+        if (player2.pacman_x % BLOCK_SIZE == 0 && player2.pacman_y % BLOCK_SIZE == 0) {
+            p2pos = player2.pacman_x / BLOCK_SIZE + N_BLOCKS * (int) (player2.pacman_y / BLOCK_SIZE);
             p2ch = maze.data[p2pos];
 
             if ((p2ch & 16) != 0) {
@@ -261,8 +261,8 @@ public class Board2 extends JPanel implements ActionListener {
                         || (p2dir.x == 0 && p2dir.y == 1 && (p2ch & 8) != 0))) {
                     p2pacmand_x = p2dir.x;
                     p2pacmand_y = p2dir.y;
-                    pacman2.view_x = p2dir.x;
-                    pacman2.view_y = p2dir.y;
+                    player2.view_x = p2dir.x;
+                    player2.view_y = p2dir.y;
                 }
             }
 
@@ -274,16 +274,16 @@ public class Board2 extends JPanel implements ActionListener {
                 p2pacmand_y = 0;
             }
         }
-        pacman2.pacman_x = pacman2.pacman_x + 3 * p2pacmand_x;
-        pacman2.pacman_y = pacman2.pacman_y + 3 * p2pacmand_y;
+        player2.pacman_x = player2.pacman_x + 3 * p2pacmand_x;
+        player2.pacman_y = player2.pacman_y + 3 * p2pacmand_y;
     }
 
     private void drawPacman(Graphics2D g2d) {
         if (pacsLifeP1 > 0) {
-            pacman1.drawPacman(g2d);
+            player1.drawPacman(g2d);
         }
         if (pacsLifeP2 > 0) {
-            pacman2.drawPacman(g2d);
+            player2.drawPacman(g2d);
         }
     }
     
@@ -301,14 +301,14 @@ public class Board2 extends JPanel implements ActionListener {
         Map maps = new Map(N_BLOCKS);
         maze.data = maps.Get_data("map1.txt");
 
-        pacman1.pacman_x = 0 * BLOCK_SIZE;
-        pacman1.pacman_y = 0 * BLOCK_SIZE;
-        pacman2.pacman_x = 25 * BLOCK_SIZE;
-        pacman2.pacman_y = 25 * BLOCK_SIZE;
-        pacman1.view_x = 0;
-        pacman1.view_y = 0;
-        pacman2.view_x = 0;
-        pacman2.view_y = 0;
+        player1.pacman_x = 0 * BLOCK_SIZE;
+        player1.pacman_y = 0 * BLOCK_SIZE;
+        player2.pacman_x = 25 * BLOCK_SIZE;
+        player2.pacman_y = 25 * BLOCK_SIZE;
+        player1.view_x = 0;
+        player1.view_y = 0;
+        player2.view_x = 0;
+        player2.view_y = 0;
  
         p1pacmand_x = 0;
         p1pacmand_y = 0;
@@ -323,9 +323,7 @@ public class Board2 extends JPanel implements ActionListener {
     }
 
     private void loadImages() {
-       
-        pacman1.loadImages("playerOne");
-        pacman2.loadImages("playerTwo");
+      
         ghost[0].loadImages("Orange");
         ghost[1].loadImages("Blue");
         ghost[2].loadImages("Red");
@@ -356,13 +354,13 @@ public class Board2 extends JPanel implements ActionListener {
             movePacman();
             moveGhost(g2d);
             if ((dying_state & 1) != 0) {
-                pacman1.pacman_x = 0 * BLOCK_SIZE;
-                pacman1.pacman_y = 0 * BLOCK_SIZE;
+                player1.pacman_x = 0 * BLOCK_SIZE;
+                player1.pacman_y = 0 * BLOCK_SIZE;
                 pacsLifeP1--;
             }
             if ((dying_state & 2) != 0) {
-                pacman2.pacman_x = 25 * BLOCK_SIZE;
-                pacman2.pacman_y = 25 * BLOCK_SIZE;
+                player2.pacman_x = 25 * BLOCK_SIZE;
+                player2.pacman_y = 25 * BLOCK_SIZE;
                 pacsLifeP2--;
             }
             dying_state = 0;
