@@ -155,6 +155,7 @@ public class Board extends JPanel implements ActionListener {
                     ghost[i].nexty = dy[count];
                 }
                 */
+                // if (ghost[i].state == 0)
                 int next = path.next((int) ghost[i].x / BLOCK_SIZE, (int) (ghost[i].y / BLOCK_SIZE), ghost[i].state);
 
                 ghost[i].nextx = dx[next]; 

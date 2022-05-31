@@ -9,31 +9,12 @@ import java.io.*;
 public class Path {
     private int pac_x, pac_y, N_BLOCKS;
     private int [][] map;
-    private int [][] distance;
     private int [] dx = {-1, 1, 0, 0};
     private int [] dy = {0, 0, -1, 1};
-
-    void bfs() {
-        Queue<Point> queue = new LinkedList<Point>();
-        queue.add(new Point(pac_x, pac_y));
-        distance[pac_y][pac_x] = 0;
-        while (queue.size() > 0) {
-           
-            Point now = queue.poll();
-            for (int i = 0; i < 4; i++) {
-                int nx = now.x + dx[i], ny = now.y + dy[i];
-                if (nx < 0 || nx >= N_BLOCKS || ny < 0 || ny >= N_BLOCKS) continue;
-                if (distance[ny][nx] == -1 && map[ny][nx] != 1) {
-                    distance[ny][nx] = distance[now.y][now.x] + 1;
-                    queue.add(new Point(nx, ny));
-                }
-            }
-        } 
-    }
+    private Bfs bfs;
 
     public Path(int N_BLOCKS) {
         this.N_BLOCKS = N_BLOCKS;
-        distance = new int[N_BLOCKS][N_BLOCKS];
         map = new int[N_BLOCKS][N_BLOCKS];
     }
     
@@ -59,28 +40,30 @@ public class Path {
                 map[i][j] =  (int)(s.charAt(now++)- '0');
             }
         }
+        bfs = new Bfs(N_BLOCKS, map);
     }
 
     private int bestAction(int x, int y) {
+        bfs.bfs(pac_x, pac_y);
         for (int i = 0; i < N_BLOCKS; i++) {
             for (int j = 0; j < N_BLOCKS; j++) {
-                distance[i][j] = -1;
+                System.out.print(bfs.distance[i][j]);
             }
+            System.out.println();
         }
-        bfs();
         int best_Action = N_BLOCKS * N_BLOCKS;
         int []choose = new int[4];
         int count = 0;
         for (int i = 0; i < 4; i++) {
             int nx = x + dx[i], ny = y + dy[i];
-        
-            if (nx < 0 || nx >= N_BLOCKS || ny < 0 || ny >= N_BLOCKS || distance[ny][nx] == -1) continue;
-            if (distance[ny][nx] < best_Action) {
-                best_Action = distance[ny][nx];
+
+            if (nx < 0 || nx >= N_BLOCKS || ny < 0 || ny >= N_BLOCKS || bfs.distance[ny][nx] == -1) continue;
+            if (bfs.distance[ny][nx] < best_Action) {
+                best_Action = bfs.distance[ny][nx];
                 count = 0;
                 choose[count++] = i;
             }
-            else if (distance[ny][nx] == best_Action) {
+            else if (bfs.distance[ny][nx] == best_Action) {
                 choose[count++] = i;
             }
         }
@@ -88,24 +71,19 @@ public class Path {
     }
 
     public int worstAction(int x, int y) {
-        for (int i = 0; i < N_BLOCKS; i++) {
-            for (int j = 0; j < N_BLOCKS; j++) {
-                distance[i][j] = -1;
-            }
-        }
-        bfs();
+        bfs.bfs(pac_x, pac_y);
         int best_Action = -1;
         int []choose = new int[4];
         int count = 0;
         for (int i = 0; i < 4; i++) {
             int nx = x + dx[i], ny = y + dy[i];
-            if (nx < 0 || nx >= N_BLOCKS || ny < 0 || ny >= N_BLOCKS || distance[ny][nx] == -1) continue;
-            if (distance[ny][nx] > best_Action) {
-                best_Action = distance[ny][nx];
+            if (nx < 0 || nx >= N_BLOCKS || ny < 0 || ny >= N_BLOCKS || bfs.distance[ny][nx] == -1) continue;
+            if (bfs.distance[ny][nx] > best_Action) {
+                best_Action = bfs.distance[ny][nx];
                 count = 0;
                 choose[count++] = i;
             }
-            else if (distance[ny][nx] == best_Action) {
+            else if (bfs.distance[ny][nx] == best_Action) {
                 choose[count++] = i;
             }
         }
