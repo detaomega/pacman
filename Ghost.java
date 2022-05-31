@@ -85,6 +85,12 @@ public class Ghost {
         control = control ^ 1;
     }
 
+    public void weak() {
+        count = 0;
+        state = 1;
+        change(2);
+    }
+    
     public void change(int newSpeed) {
         x = x / (newSpeed) * newSpeed;
         y = y / (newSpeed) * newSpeed;

@@ -13,9 +13,7 @@ public class Board extends JPanel implements ActionListener {
     private final int BLOCK_SIZE = 24;
     private final int N_BLOCKS = 26;
     private final int SCREEN_SIZE = N_BLOCKS * BLOCK_SIZE;
-    private final int PACMAN_SPEED = 6;
 
-    private int pacsLeft, score;
     private int [] dx = {-1, 1, 0, 0};
     private int [] dy = {0, 0, -1, 1};
     private int pacmand_x, pacmand_y;
@@ -26,11 +24,10 @@ public class Board extends JPanel implements ActionListener {
 
     private Player player1;
     private Ghost [] ghost;
+    private Score P1score;
     private Path path;
     private Maze maze;
 
-    private Ice ice;
-  
     private Timer timer;
 
     // constructor
@@ -54,11 +51,11 @@ public class Board extends JPanel implements ActionListener {
   
         
         player1 = new Player("playerOne");
+        P1score = new Score("playerOne");
         ghost = new Ghost[4];
         for (int i = 0; i < 4; i++) {
             ghost[i] = new Ghost();
         }
-        ice = new Ice();
         maze = new Maze(N_BLOCKS);
         timer = new Timer(40, this); // 每0.04秒repaint
         timer.start();
@@ -86,19 +83,6 @@ public class Board extends JPanel implements ActionListener {
         g2d.drawString(s, (SCREEN_SIZE - metr.stringWidth(s)) / 2, SCREEN_SIZE / 2);
     }
 
-
-
-    private void drawScore(Graphics2D g) {
-        String s;
-        g.setFont(smallFont);
-        g.setColor(new Color(96, 128, 255));
-        s = "Score: " + score;
-        g.drawString(s, SCREEN_SIZE / 2 + 96, SCREEN_SIZE + 16);
-
-        // for (int i = 0; i < pacsLeft; i++) {
-        //     g.drawImage(pacmanleft, i * 28 + 8, SCREEN_SIZE + 1, this);
-        // }x
-    }
 
 
     private void moveGhost(Graphics2D g2d) {
@@ -174,10 +158,10 @@ public class Board extends JPanel implements ActionListener {
             ghost[i].x = ghost[i].x + (ghost[i].nextx * ghost[i].speed);
             ghost[i].y = ghost[i].y + (ghost[i].nexty * ghost[i].speed);
             ghost[i].drawGhost(g2d);
-            if (player1.pacman_x > (ghost[i].x - 18) 
-                    && player1.pacman_x < (ghost[i].x + 18)
-                    && player1.pacman_y > (ghost[i].y - 18) 
-                    && player1.pacman_y < (ghost[i].y + 18)
+            if (player1.pacman_x > (ghost[i].x - 15) 
+                    && player1.pacman_x < (ghost[i].x + 15)
+                    && player1.pacman_y > (ghost[i].y - 15) 
+                    && player1.pacman_y < (ghost[i].y + 15)
                     && inGame && ghost[i].state != 3) {
                 if (ghost[i].state == 0) {
                    dying = true; 
@@ -188,9 +172,11 @@ public class Board extends JPanel implements ActionListener {
                     }
                 }  
                 else {
-                    score += 100;
+                    P1score.score += 100;
+                    g2d.drawString("100000", ghost[i].x,  ghost[i].y);
                     try {
-                        Thread.sleep(200);
+                        g2d.drawString("100", ghost[i].x,  ghost[i].y);
+                        Thread.sleep(1000);
                     } catch (InterruptedException e) {
                     
                     }
@@ -220,16 +206,16 @@ public class Board extends JPanel implements ActionListener {
 
             if ((ch & 16) != 0) {
                 maze.data[pos] -= 16;
-                score++;
+                P1score.score++;
             }
 
             if ((ch & 32) != 0) {
                 maze.data[pos] -= 32;
                 for (int i = 0; i < 4; i++) {
-                    ghost[i].state = 1;
-                    ghost[i].change(2);
+                    ghost[i].weak();
                 }
-                 try {
+                player1.change(4);
+                try {
                     Thread.sleep(200);
                 } catch (InterruptedException e) {
                     
@@ -258,14 +244,17 @@ public class Board extends JPanel implements ActionListener {
             }
 
         }
-        player1.pacman_x = player1.pacman_x + 3 * pacmand_x;
-        player1.pacman_y = player1.pacman_y + 3 * pacmand_y;
-        path.update((int) player1.pacman_x / BLOCK_SIZE, (int) (player1.pacman_y / BLOCK_SIZE));
+        player1.pacman_x = player1.pacman_x + player1.speed * pacmand_x;
+        player1.pacman_y = player1.pacman_y + player1.speed * pacmand_y;
+        if (pacmand_x == 1 && (player1.pacman_x % BLOCK_SIZE != 0))
+            path.update((int) player1.pacman_x / BLOCK_SIZE + 1, (int) (player1.pacman_y / BLOCK_SIZE));
+        else if (pacmand_y == 1 && (player1.pacman_y / BLOCK_SIZE != 0))
+            path.update((int) player1.pacman_x / BLOCK_SIZE, (int) (player1.pacman_y / BLOCK_SIZE) + 1);
+        else 
+            path.update((int) player1.pacman_x / BLOCK_SIZE, (int) (player1.pacman_y / BLOCK_SIZE));
     }
 
     private void initGame() {
-        pacsLeft = 3;
-        score = 0;
         restartgame();
     }
 
@@ -279,6 +268,7 @@ public class Board extends JPanel implements ActionListener {
         path.loadMap("map.txt");
         player1.pacman_x = 0 * BLOCK_SIZE;
         player1.pacman_y = 0 * BLOCK_SIZE;
+        player1.speed = 3;
         path.update(0, 0);
         player1.view_x = 0;
         player1.view_y = 1;
@@ -292,7 +282,6 @@ public class Board extends JPanel implements ActionListener {
             ghost[i - 11].ori_x = i * BLOCK_SIZE;
             ghost[i - 11].ori_y = 12 * BLOCK_SIZE;
             ghost[i - 11].state = 0;
-    
             ghost[i - 11].speed = 3;
         }
         
@@ -324,8 +313,7 @@ public class Board extends JPanel implements ActionListener {
         if (inGame) {
             playGame(g2d);
             maze.drawMaze(g2d);
-            drawScore(g2d);
-            ice.drawIce(g2d);
+            P1score.drawScore(g2d, SCREEN_SIZE);
             movePacman(g2d);
             player1.drawPacman(g2d);
             moveGhost(g2d);
@@ -344,9 +332,9 @@ public class Board extends JPanel implements ActionListener {
 
     private void death() {
         if (dying == false) return;
-        pacsLeft--;
+        P1score.life--;
 
-        if (pacsLeft == 0) {
+        if (P1score.life == 0) {
             endgame = true;
             inGame = false;
         }

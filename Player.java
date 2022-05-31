@@ -10,7 +10,7 @@ public class Player {
     private Image [] pacmandown = new Image[5];
     private Image [] pacmanleft = new Image[5];
     private Image [] pacmanright = new Image[5];
-    public int view_x, view_y, pacman_x, pacman_y, speed;
+    public int view_x, view_y, pacman_x, pacman_y, speed, state, life;
     private int control = 0, current_image[] = {0, 1, 2, 3, 4, 3, 2, 1}, show = 0;
 
     public Player(String s) {
@@ -34,6 +34,8 @@ public class Player {
         pacmanright[2] = new ImageIcon("images/" + s + "/right2.png").getImage();
         pacmanright[3] = new ImageIcon("images/" + s + "/right3.png").getImage();
         pacmanright[4] = new ImageIcon("images/" + s + "/right4.png").getImage();
+        life = 3;
+        state = 0;
     }
 
     public void drawPacman(Graphics2D g2d) {
