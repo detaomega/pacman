@@ -16,7 +16,8 @@ public class Board extends JPanel implements ActionListener {
     private final int PACMAN_SPEED = 6;
 
     private int pacsLeft, score;
-    private int[] dx, dy;
+    private int [] dx = {-1, 1, 0, 0};
+    private int [] dy = {0, 0, -1, 1};
     private int pacmand_x, pacmand_y;
 
 
@@ -25,6 +26,7 @@ public class Board extends JPanel implements ActionListener {
 
     private DrawPacman drawpac;
     private DrawGhost [] ghost;
+    private Path path;
     private Maze maze;
 
     private Ice ice;
@@ -49,15 +51,13 @@ public class Board extends JPanel implements ActionListener {
 
 
         d = new Dimension(400, 400);
-        dx = new int[4];
-        dy = new int[4];
+  
         
         drawpac = new DrawPacman();
         ghost = new DrawGhost[4];
         for (int i = 0; i < 4; i++) {
             ghost[i] = new DrawGhost();
         }
-        
         ice = new Ice();
         maze = new Maze(N_BLOCKS);
         timer = new Timer(40, this); // 每0.04秒repaint
@@ -103,12 +103,13 @@ public class Board extends JPanel implements ActionListener {
 
 
     private void moveGhost(Graphics2D g2d) {
-        for (int i = 0; i < 4; i++) {
+        for (int i = 0; i < 1; i++) {
             if (ghost[i].x % BLOCK_SIZE == 0 && ghost[i].y % BLOCK_SIZE == 0) {
                 int pos = ghost[i].x / BLOCK_SIZE + N_BLOCKS * (int) (ghost[i].y / BLOCK_SIZE);
                 int count = 0;
                 count = 0;
-
+                
+                /*
                 if ((maze.data[pos] & 1) == 0 && ghost[i].nextx != 1) {
                     dx[count] = -1;
                     dy[count] = 0;
@@ -142,7 +143,6 @@ public class Board extends JPanel implements ActionListener {
                         ghost[i].nextx = -ghost[i].nextx;
                         ghost[i].nexty = -ghost[i].nexty;
                     }
-
                 } else {
 
                     count = (int) (Math.random() * count);
@@ -154,7 +154,11 @@ public class Board extends JPanel implements ActionListener {
                     ghost[i].nextx = dx[count];
                     ghost[i].nexty = dy[count];
                 }
+                */
+                int next = path.next((int) ghost[i].x / BLOCK_SIZE, (int) (ghost[i].y / BLOCK_SIZE));
 
+                ghost[i].nextx = dx[next];
+                ghost[i].nexty = dy[next];
             }
 
             ghost[i].x = ghost[i].x + (ghost[i].nextx * ghost[i].speed);
@@ -171,7 +175,6 @@ public class Board extends JPanel implements ActionListener {
                 else {
                     score += 100;
                     try {
-                        System.out.println("started running...");
                         Thread.sleep(200);
                     } catch (InterruptedException e) {
                     
@@ -197,7 +200,8 @@ public class Board extends JPanel implements ActionListener {
 
         if (drawpac.pacman_x % BLOCK_SIZE == 0 && drawpac.pacman_y % BLOCK_SIZE == 0) {
             pos = drawpac.pacman_x / BLOCK_SIZE + N_BLOCKS * (int) (drawpac.pacman_y / BLOCK_SIZE);
-            ch = maze.data[pos];
+            path.update((int) drawpac.pacman_x / BLOCK_SIZE, (int) (drawpac.pacman_y / BLOCK_SIZE));
+            ch = maze.data[pos]; 
 
             if ((ch & 16) != 0) {
                 maze.data[pos] -= 16;
@@ -211,7 +215,6 @@ public class Board extends JPanel implements ActionListener {
                     ghost[i].change(2);
                 }
                  try {
-                    System.out.println("started running...");
                     Thread.sleep(200);
                 } catch (InterruptedException e) {
                     
@@ -244,9 +247,6 @@ public class Board extends JPanel implements ActionListener {
         drawpac.pacman_y = drawpac.pacman_y + 3 * pacmand_y;
     }
 
-    private void eatProp() {
-
-    }
     private void initGame() {
         pacsLeft = 3;
         score = 0;
@@ -259,16 +259,18 @@ public class Board extends JPanel implements ActionListener {
         if (dying == false) {
             maze.data = maps.Get_data("map.txt");
         }
-    
+        path = new Path(N_BLOCKS);
+        path.loadMap("map.txt");
         drawpac.pacman_x = 0 * BLOCK_SIZE;
         drawpac.pacman_y = 0 * BLOCK_SIZE;
+        path.update(0, 0);
         drawpac.view_x = 0;
         drawpac.view_y = 1;
         pacmand_x = 0;
         pacmand_y = 0;
         req_x = 0;
         req_y = 0;
-        for (int i = 0; i < 4; i++) {
+        for (int i = 0; i < 1; i++) {
             ghost[i].x = 7 * BLOCK_SIZE;
             ghost[i].y = i * BLOCK_SIZE;
             ghost[i].ori_x = 7 * BLOCK_SIZE;
