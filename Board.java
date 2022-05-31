@@ -25,7 +25,7 @@ public class Board extends JPanel implements ActionListener {
     private boolean dying;
 
     private DrawPacman drawpac;
-    private DrawGhost [] ghost;
+    private Ghost [] ghost;
     private Path path;
     private Maze maze;
 
@@ -54,9 +54,9 @@ public class Board extends JPanel implements ActionListener {
   
         
         drawpac = new DrawPacman();
-        ghost = new DrawGhost[4];
+        ghost = new Ghost[4];
         for (int i = 0; i < 4; i++) {
-            ghost[i] = new DrawGhost();
+            ghost[i] = new Ghost();
         }
         ice = new Ice();
         maze = new Maze(N_BLOCKS);

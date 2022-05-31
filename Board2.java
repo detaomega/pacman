@@ -26,7 +26,7 @@ public class Board2 extends JPanel implements ActionListener {
     private Point p1dir, p2dir; // 判斷方向
 
     private DrawPacman pacman1, pacman2;
-    private DrawGhost [] ghost;  
+    private Ghost [] ghost;  
     private Maze maze;
     // pacman map
 
@@ -56,9 +56,9 @@ public class Board2 extends JPanel implements ActionListener {
         dx = new int[4];
         dy = new int[4];
         
-        ghost = new DrawGhost[4];
+        ghost = new Ghost[4];
         for (int i = 0; i < 4; i++) {
-            ghost[i] = new DrawGhost();
+            ghost[i] = new Ghost();
         }
         
         p1dir = new Point(0, 0);
