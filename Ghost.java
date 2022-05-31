@@ -10,11 +10,13 @@ public class Ghost {
     private Image []ghostdown;  
     private Image []weak;
     private Image []weak2;
+    private Image eye;
     public int nextx, nexty, x, y, control = 0, ori_x, ori_y, count = 0, speed;
     public int state = 0;
 
 
     public void loadImages(String s) {
+
         String Dir = "images/ghost" + s + "/" + s;
         ghostleft[0] = new ImageIcon(Dir + "1left.png").getImage();
         ghostleft[1] = new ImageIcon(Dir + "2left.png").getImage();
@@ -32,6 +34,8 @@ public class Ghost {
         weak[1] = new ImageIcon("images/ghostweak/ghost2.png").getImage();
         weak2[0] = new ImageIcon("images/ghostweak/ghost3.png").getImage();
         weak2[1] = new ImageIcon("images/ghostweak/ghost4.png").getImage();
+        eye = new ImageIcon("images/ghostEye/eye.png").getImage();
+    
     }
     
     public Ghost() {
@@ -42,7 +46,6 @@ public class Ghost {
         ghostleft = new Image[2];
         ghostdown = new Image[2];
         ghostright = new Image[2];
-
     }
     private void timer() {
         count++;
@@ -83,6 +86,7 @@ public class Ghost {
         y = y / (newSpeed) * newSpeed;
         speed = newSpeed;
     }
+    
     public void reset() {
         x = ori_x;
         y = ori_y;
