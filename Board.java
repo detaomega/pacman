@@ -276,7 +276,9 @@ public class Board extends JPanel implements ActionListener {
         }
         else if (eatItem == 2) {
             player1.speedUp();
-            
+        }
+        else if (eatItem == 3) {
+            P1score.life = Math.min(5, P1score.life + 1);
         }
     }
 
@@ -285,7 +287,6 @@ public class Board extends JPanel implements ActionListener {
     }
 
     private void restartgame() {
-
         Map maps = new Map(N_BLOCKS);
         if (dying == false) {
             maze.data = maps.Get_data("map.txt");
