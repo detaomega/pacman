@@ -7,16 +7,19 @@ public class Item {
     private Ice ice;
     private Apple apple;   
     private Blood blood;
+    private Cherry cherry;
     public Item() {
         ice = new Ice(5, 12);
         apple = new Apple(0, 5); 
         blood = new Blood(5, 0);
+        cherry = new Cherry(1, 0);
     }
 
     public void drawItem(Graphics2D g2d) {
         ice.drawIce(g2d);
         apple.drawApple(g2d);
         blood.drawBlood(g2d);
+        cherry.drawCherry(g2d);
     }
 
     public int getItem(int x, int y) {
