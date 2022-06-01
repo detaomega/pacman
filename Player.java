@@ -38,6 +38,7 @@ public class Player {
         life = 3;
         state = 0;
         speedTime = 0;
+
     }
     
 
@@ -73,8 +74,9 @@ public class Player {
         speed = newSpeed;
     }
     
-    public void speedUp() {
-        change(6);
-        speedTime = 100;
+    public void speedUp(int newSpeed, int time) {
+        change(newSpeed);
+        speedTime = time;
     }
+
 }

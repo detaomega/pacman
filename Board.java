@@ -18,9 +18,9 @@ public class Board extends JPanel implements ActionListener {
     private int [] dy = {0, 0, -1, 1};
     private int pacmand_x, pacmand_y;
 
-
+    
     private int req_x, req_y;
-    private int state = 0, dying_count = 0;
+    private int state, dying_count, ghostNumber, eatPoint;
     private boolean dying;
     private Player player1;
     private Ghost [] ghost;
@@ -49,14 +49,24 @@ public class Board extends JPanel implements ActionListener {
 
 
         d = new Dimension(400, 400);
-  
+
+        //dead Animation
+        dying_count = 0;
+        state = 0;
         
-        player1 = new Player("playerOne");
-        p1score = new Score("playerOne");
-        ghost = new Ghost[4];
-        for (int i = 0; i < 4; i++) {
+        // add ghost
+        eatPoint = 0;
+
+        // inital ghost
+        ghost = new Ghost[20];
+        ghostNumber = 4;
+        for (int i = 0; i < ghostNumber; i++) {
             ghost[i] = new Ghost();
         }
+
+        // inital Player 
+        player1 = new Player("playerOne");
+        p1score = new Score("playerOne");
         maze = new Maze(N_BLOCKS);
         timer = new Timer(40, this); // 每0.04秒repaint
         timer.start();
@@ -87,7 +97,7 @@ public class Board extends JPanel implements ActionListener {
 
 
     private void moveGhost(Graphics2D g2d) {
-        for (int i = 0; i < 4; i++) {
+        for (int i = 0; i < ghostNumber; i++) {
             if (ghost[i].x % BLOCK_SIZE == 0 && ghost[i].y % BLOCK_SIZE == 0) {
                 int pos = ghost[i].x / BLOCK_SIZE + N_BLOCKS * (int) (ghost[i].y / BLOCK_SIZE);
                 int count = 0;
@@ -95,13 +105,13 @@ public class Board extends JPanel implements ActionListener {
                 if (ghost[i].state == 3) {
                     int next = 0;
                     Path recover = new Path(N_BLOCKS);
-                    recover.loadMap("map1.txt");
+                    recover.loadMap("map.txt");
                     recover.update((int) ghost[i].ori_x / BLOCK_SIZE, (int) (ghost[i].ori_y / BLOCK_SIZE));
                     next = recover.next((int) ghost[i].x / BLOCK_SIZE, (int) (ghost[i].y / BLOCK_SIZE), ghost[i].state);
                     ghost[i].nextx = dx[next]; 
                     ghost[i].nexty = dy[next];
                 }
-                else if (i >= 1) {
+                else if (i >= 1 && ghost[i].freeze == 0) {
                     int []randomx = new int[4];
                     int []randomy = new int[4];
                     if ((maze.data[pos] & 1) == 0 && ghost[i].nextx != 1) {
@@ -210,6 +220,12 @@ public class Board extends JPanel implements ActionListener {
             if ((ch & 16) != 0) {
                 maze.data[pos] -= 16;
                 p1score.score++;
+                eatPoint++;
+                if (eatPoint % 30 == 0 && eatPoint != 0) {
+                    ghost[ghostNumber] = new Ghost();
+                    ghost[ghostNumber].addGhost(12 * BLOCK_SIZE, 12 * BLOCK_SIZE, "Red");
+                    ghostNumber++;
+                }
             }
 
             if ((ch & 32) != 0) {
@@ -217,7 +233,7 @@ public class Board extends JPanel implements ActionListener {
                 for (int i = 0; i < 4; i++) {
                     ghost[i].weak();
                 }
-                player1.change(4);
+                player1.speedUp(4, 172);
                 try {
                     Thread.sleep(200);
                 } catch (InterruptedException e) {
@@ -275,7 +291,7 @@ public class Board extends JPanel implements ActionListener {
             }
         }
         else if (eatItem == 2) {
-            player1.speedUp();
+            player1.speedUp(6, 120);
 
         }
         else if (eatItem == 3) {
@@ -290,11 +306,11 @@ public class Board extends JPanel implements ActionListener {
     private void restartgame() {
         Map maps = new Map(N_BLOCKS);
         if (dying == false) {
-            maze.data = maps.Get_data("map1.txt");
+            maze.data = maps.Get_data("map.txt");
         }
         path = new Path(N_BLOCKS);
         item = new Item();
-        path.loadMap("map1.txt");
+        path.loadMap("map.txt");
         player1.pacman_x = 0 * BLOCK_SIZE;
         player1.pacman_y = 0 * BLOCK_SIZE;
         player1.speed = 3;
@@ -305,6 +321,9 @@ public class Board extends JPanel implements ActionListener {
         pacmand_y = 0;
         req_x = 0;
         req_y = 0;
+        
+        eatPoint = 0;
+        ghostNumber = 4;
         for (int i = 11; i < 15; i++) {
             ghost[i - 11].x = i * BLOCK_SIZE;
             ghost[i - 11].y = 12 * BLOCK_SIZE;
@@ -355,7 +374,9 @@ public class Board extends JPanel implements ActionListener {
             if (dying_count == 12) {
                 dying_count = 0;
                 state = 0;
-                restartgame();
+                player1.pacman_x = 0;
+                player1.pacman_y = 0;
+                death();
             }
             
         }
@@ -367,8 +388,6 @@ public class Board extends JPanel implements ActionListener {
             movePacman(g2d);
             player1.drawPacman(g2d);
             moveGhost(g2d);
-            death();
-
         } 
         else if (endgame == true) {
             GameOver game = new GameOver();
@@ -383,7 +402,14 @@ public class Board extends JPanel implements ActionListener {
     private void death() {
         if (dying == false) return;
         p1score.life--;
-
+        dying = false;
+        player1.pacman_x = 0;
+        player1.pacman_y = 0;
+        ghostNumber = 4;
+        for (int i = 0; i < ghostNumber; i++) {
+            ghost[i].x = ghost[i].ori_x;
+            ghost[i].y = ghost[i].ori_y;
+        }
         if (p1score.life == 0) {
             endgame = true;
             inGame = false;
