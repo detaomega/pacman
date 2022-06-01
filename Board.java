@@ -24,11 +24,10 @@ public class Board extends JPanel implements ActionListener {
 
     private Player player1;
     private Ghost [] ghost;
-    private Score P1score;
+    private Score p1score;
     private Path path;
-    private Maze maze;
     private Item item;
-
+    private Maze maze;
     private Timer timer;
     
 
@@ -53,7 +52,7 @@ public class Board extends JPanel implements ActionListener {
   
         
         player1 = new Player("playerOne");
-        P1score = new Score("playerOne");
+        p1score = new Score("playerOne");
         ghost = new Ghost[4];
         for (int i = 0; i < 4; i++) {
             ghost[i] = new Ghost();
@@ -176,7 +175,7 @@ public class Board extends JPanel implements ActionListener {
                     }
                 }  
                 else {
-                    P1score.score += 100;
+                    p1score.score += 100;
                     try {
                         Thread.sleep(400);
                     } 
@@ -209,7 +208,7 @@ public class Board extends JPanel implements ActionListener {
 
             if ((ch & 16) != 0) {
                 maze.data[pos] -= 16;
-                P1score.score++;
+                p1score.score++;
             }
 
             if ((ch & 32) != 0) {
@@ -278,7 +277,7 @@ public class Board extends JPanel implements ActionListener {
             player1.speedUp();
         }
         else if (eatItem == 3) {
-            P1score.life = Math.min(5, P1score.life + 1);
+            p1score.life = Math.min(5, p1score.life + 1);
         }
     }
 
@@ -299,7 +298,7 @@ public class Board extends JPanel implements ActionListener {
         player1.speed = 3;
         path.update(0, 0);
         player1.view_x = 0;
-        player1.view_y = 1;
+        player1.view_y = 0;
         pacmand_x = 0;
         pacmand_y = 0;
         req_x = 0;
@@ -342,7 +341,7 @@ public class Board extends JPanel implements ActionListener {
         if (inGame) {
             playGame(g2d);
             maze.drawMaze(g2d);
-            P1score.drawScore(g2d, SCREEN_SIZE);
+            p1score.drawScore(g2d, SCREEN_SIZE);
             item.drawItem(g2d);
             movePacman(g2d);
             player1.drawPacman(g2d);
@@ -362,9 +361,9 @@ public class Board extends JPanel implements ActionListener {
 
     private void death() {
         if (dying == false) return;
-        P1score.life--;
+        p1score.life--;
 
-        if (P1score.life == 0) {
+        if (p1score.life == 0) {
             endgame = true;
             inGame = false;
         }

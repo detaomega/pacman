@@ -13,26 +13,25 @@ public class Board2 extends JPanel implements ActionListener {
     private final int BLOCK_SIZE = 24;
     private final int N_BLOCKS = 26;
     private final int SCREEN_SIZE = N_BLOCKS * BLOCK_SIZE;
-    private final int PACMAN_SPEED = 6;
 
-    private int pacsLifeP1, pacsLifeP2, p1score, p2score;
     private int dying_state;
-    private int[] dx, dy;
+    private int [] dx = {-1, 1, 0, 0};
+    private int [] dy = {0, 0, -1, 1};
     //private Point playerpos; 
  
 
     private int  p1pacmand_x, p1pacmand_y,p2pacmand_x, p2pacmand_y;
-    private int speed[] = {4, 3, 3, 4};
     private Point p1dir, p2dir; // 判斷方向
 
     private Player player1, player2;
     private Ghost [] ghost;  
     private Maze maze;
+    private Path path;
+    private Item item;
+    private Score p1score, p2score;
     // pacman map
 
 
-
-    private int[] screenData;
     private Timer timer;
 
     // constructor
@@ -49,30 +48,26 @@ public class Board2 extends JPanel implements ActionListener {
     }
 
     private void initVariables() {
-        screenData = new int[N_BLOCKS * N_BLOCKS];
 
         maze = new Maze(N_BLOCKS);
         d = new Dimension(400, 400);
-        dx = new int[4];
-        dy = new int[4];
-        
+
         ghost = new Ghost[4];
         for (int i = 0; i < 4; i++) {
             ghost[i] = new Ghost();
         }
-        
         p1dir = new Point(0, 0);
         p2dir = new Point(0, 0);
         player1 = new Player("playerOne");
         player2 = new Player("playerTwo");
+        p1score = new Score("playerOne");
+        p2score = new Score("playerTwo");
         dying_state = 0;
         timer = new Timer(40, this); // 每0.04秒repaint
         timer.start();
     }
 
     private void playGame(Graphics2D g2d) {
-        drawPacman(g2d);
-
         if (maze.checkMaze()) {
             restartgame();
         }
@@ -113,198 +108,352 @@ public class Board2 extends JPanel implements ActionListener {
     }
 
 
-
     private void moveGhost(Graphics2D g2d) {
-
         for (int i = 0; i < 4; i++) {
             if (ghost[i].x % BLOCK_SIZE == 0 && ghost[i].y % BLOCK_SIZE == 0) {
                 int pos = ghost[i].x / BLOCK_SIZE + N_BLOCKS * (int) (ghost[i].y / BLOCK_SIZE);
                 int count = 0;
                 count = 0;
-
-                if ((maze.data[pos] & 1) == 0 && ghost[i].nextx != 1) {
-                    dx[count] = -1;
-                    dy[count] = 0;
-                    count++;
+                if (ghost[i].state == 3) {
+                    int next = 0;
+                    Path recover = new Path(N_BLOCKS);
+                    recover.loadMap("map1.txt");
+                    recover.update((int) ghost[i].ori_x / BLOCK_SIZE, (int) (ghost[i].ori_y / BLOCK_SIZE));
+                    next = recover.next((int) ghost[i].x / BLOCK_SIZE, (int) (ghost[i].y / BLOCK_SIZE), ghost[i].state);
+                    ghost[i].nextx = dx[next]; 
+                    ghost[i].nexty = dy[next];
                 }
+                else if (i >= 1) {
+                    int []randomx = new int[4];
+                    int []randomy = new int[4];
+                    if ((maze.data[pos] & 1) == 0 && ghost[i].nextx != 1) {
+                        randomx[count] = -1;
+                        randomy[count] = 0;
+                        count++;
+                    }
 
-                if ((maze.data[pos] & 2) == 0 && ghost[i].nexty != 1) {
-                    dx[count] = 0;
-                    dy[count] = -1;
-                    count++;
-                }
+                    if ((maze.data[pos] & 2) == 0 && ghost[i].nexty != 1) {
+                        randomx[count] = 0;
+                        randomy[count] = -1;
+                        count++;
+                    }
 
-                if ((maze.data[pos] & 4) == 0 && ghost[i].nextx != -1) {
-                    dx[count] = 1;
-                    dy[count] = 0;
-                    count++;
-                }
+                    if ((maze.data[pos] & 4) == 0 && ghost[i].nextx != -1) {
+                        randomx[count] = 1;
+                        randomy[count] = 0;
+                        count++;
+                    }
 
-                if ((maze.data[pos] & 8) == 0 && ghost[i].nexty != -1) {
-                    dx[count] = 0;
-                    dy[count] = 1;
-                    count++;
-                }
+                    if ((maze.data[pos] & 8) == 0 && ghost[i].nexty != -1) {
+                        randomx[count] = 0;
+                        randomy[count] = 1;
+                        count++;
+                    }
 
-                if (count == 0) {
+                    if (count == 0) {
 
-                    if ((maze.data[pos] & 15) == 15) {
-                        ghost[i].nextx = 0;
-                        ghost[i].nexty = 0;
+                        if ((maze.data[pos] & 15) == 15) {
+                            ghost[i].nextx = 0;
+                            ghost[i].nexty = 0;
+                        } else {
+                            ghost[i].nextx = -ghost[i].nextx;
+                            ghost[i].nexty = -ghost[i].nexty;
+                        }
                     } else {
-                        ghost[i].nextx = -ghost[i].nextx;
-                        ghost[i].nexty = -ghost[i].nexty;
+
+                        count = (int) (Math.random() * count);
+
+                        if (count > 3) {
+                            count = 3;
+                        }
+
+                        ghost[i].nextx = randomx[count];
+                        ghost[i].nexty = randomy[count];
                     }
-
-                } else {
-
-                    count = (int) (Math.random() * count);
-
-                    if (count > 3) {
-                        count = 3;
-                    }
-
-                    ghost[i].nextx = dx[count];
-                    ghost[i].nexty = dy[count];
                 }
-
+                else {
+                    int next = path.next((int) ghost[i].x / BLOCK_SIZE, (int) (ghost[i].y / BLOCK_SIZE), ghost[i].state);
+                    ghost[i].nextx = dx[next]; 
+                    ghost[i].nexty = dy[next];
+                }
             }
-
-            ghost[i].x = ghost[i].x + (ghost[i].nextx * speed[i]);
-            ghost[i].y = ghost[i].y + (ghost[i].nexty * speed[i]);
+            
+            if (ghost[i].freeze == 0 || ghost[i].state == 3) {
+                ghost[i].x = ghost[i].x + (ghost[i].nextx * ghost[i].speed);
+                ghost[i].y = ghost[i].y + (ghost[i].nexty * ghost[i].speed);
+            }
             ghost[i].drawGhost(g2d);
-            if (player1.pacman_x > (ghost[i].x - 15) && player1.pacman_x < (ghost[i].x + 15)
-                    && player1.pacman_y > (ghost[i].y - 15) && player1.pacman_y < (ghost[i].y + 15)
-                    && inGame) {
-                ghost[i].x = (i + 11) * BLOCK_SIZE;
-                ghost[i].y = 12 * BLOCK_SIZE;
-                dying_state |= 1;
+            if (player1.pacman_x > (ghost[i].x - 15) 
+                    && player1.pacman_x < (ghost[i].x + 15)
+                    && player1.pacman_y > (ghost[i].y - 15) 
+                    && player1.pacman_y < (ghost[i].y + 15)
+                    && inGame && ghost[i].state != 3
+                    && p1score.life > 0) {
+                if (ghost[i].state == 0) {
+                   dying_state |= 1;
+                   try {
+                        Thread.sleep(400);
+                    } catch (InterruptedException e) {
+                    
+                    }
+                }  
+                else {
+                    p1score.score += 100;
+                    try {
+                        Thread.sleep(400);
+                    } 
+                    catch (InterruptedException e) {
+                    
+                    }
+                    ghost[i].state = 3;
+                    ghost[i].change(8);
+                }
             }
-
-            if (player2.pacman_x > (ghost[i].x - 15) && player2.pacman_x < (ghost[i].x + 15)
-                    && player2.pacman_y > (ghost[i].y - 15) && player2.pacman_y < (ghost[i].y + 15)
-                    && inGame) {
-                ghost[i].x = (i + 11) * BLOCK_SIZE;
-                ghost[i].y = 12 * BLOCK_SIZE;
-                dying_state |= 2;
+            if (player2.pacman_x > (ghost[i].x - 15) 
+                    && player2.pacman_x < (ghost[i].x + 15)
+                    && player2.pacman_y > (ghost[i].y - 15) 
+                    && player2.pacman_y < (ghost[i].y + 15)
+                    && inGame && ghost[i].state != 3 
+                    && p2score.life > 0) {
+                if (ghost[i].state == 0) {
+                   dying_state |= 2;
+                   try {
+                        Thread.sleep(400);
+                    } catch (InterruptedException e) {
+                    
+                    }
+                }  
+                else {
+                    p2score.score += 100;
+                    try {
+                        Thread.sleep(400);
+                    } 
+                    catch (InterruptedException e) {
+                    
+                    }
+                    ghost[i].state = 3;
+                    ghost[i].change(8);
+                }
             }
         }
     }
+    
 
+    private void movePacman1() {
+        int pos, ch;
 
-  
-    private void movePacman() {
-        int p1pos, p2pos, p1ch, p2ch;
+        if (p1dir.x == 0 && p1dir.y == 0) return;
 
-        if (p1dir.x == -p1pacmand_x && p1dir.y == -p1pacmand_y) {
+         if (p1dir.x == -p1pacmand_x && p1dir.y == -p1pacmand_y) {
             p1pacmand_x = p1dir.x;
             p1pacmand_y = p1dir.y;
             player1.view_x = p1dir.x;
             player1.view_y = p1dir.y;
         }
 
+ 
         if (player1.pacman_x % BLOCK_SIZE == 0 && player1.pacman_y % BLOCK_SIZE == 0) {
-            p1pos = player1.pacman_x / BLOCK_SIZE + N_BLOCKS * (int) (player1.pacman_y / BLOCK_SIZE);
-            p1ch = maze.data[p1pos];
+            pos = player1.pacman_x / BLOCK_SIZE + N_BLOCKS * (int) (player1.pacman_y / BLOCK_SIZE);
+            ch = maze.data[pos]; 
 
-            if ((p1ch & 16) != 0) {
-                maze.data[p1pos] -= 16;
-                p1score++;
+            if ((ch & 16) != 0) {
+                maze.data[pos] -= 16;
+                p1score.score++;
+            }
+
+            if ((ch & 32) != 0) {
+                maze.data[pos] -= 32;
+                for (int i = 0; i < 4; i++) {
+                    ghost[i].weak();
+                }
+                player1.change(4);
+                try {
+                    Thread.sleep(200);
+                } catch (InterruptedException e) {
+                    
+                }
             }
 
             if (p1dir.x != 0 || p1dir.y != 0) {
-                if (!((p1dir.x == -1 && p1dir.y == 0 && (p1ch & 1) != 0)
-                        || (p1dir.x == 1 && p1dir.y == 0 && (p1ch & 4) != 0)
-                        || (p1dir.x == 0 && p1dir.y == -1 && (p1ch & 2) != 0)
-                        || (p1dir.x == 0 && p1dir.y == 1 && (p1ch & 8) != 0))) {
+                if (!((p1dir.x == -1 && p1dir.y == 0 && (ch & 1) != 0)
+                        || (p1dir.x == 1 && p1dir.y == 0 && (ch & 4) != 0)
+                        || (p1dir.x == 0 && p1dir.y == -1 && (ch & 2) != 0)
+                        || (p1dir.x == 0 && p1dir.y == 1 && (ch & 8) != 0))) {
                     p1pacmand_x = p1dir.x;
                     p1pacmand_y = p1dir.y;
                     player1.view_x = p1dir.x;
                     player1.view_y = p1dir.y;
                 }
             }
-
-            if (((p1pacmand_x == -1 && p1pacmand_y == 0) && (p1ch & 1) != 0)
-                    || ((p1pacmand_x == 1 && p1pacmand_y == 0) && (p1ch & 4) != 0)
-                    || ((p1pacmand_x == 0 && p1pacmand_y == -1)  && (p1ch & 2) != 0)
-                    || ((p1pacmand_x == 0 && p1pacmand_y == 1) && (p1ch & 8) != 0)) {
+            // Check for standstill
+            if (((p1pacmand_x == -1 && p1pacmand_y == 0) && (ch & 1) != 0)
+                    || ((p1pacmand_x == 1 && p1pacmand_y == 0) && (ch & 4) != 0)
+                    || ((p1pacmand_x == 0 && p1pacmand_y == -1)  && (ch & 2) != 0)
+                    || ((p1pacmand_x == 0 && p1pacmand_y == 1) && (ch & 8) != 0)) {
                 p1pacmand_x = 0;
                 p1pacmand_y = 0;
             }
+
         }
-        player1.pacman_x = player1.pacman_x + 12 * p1pacmand_x;
-        player1.pacman_y = player1.pacman_y + 12 * p1pacmand_y;
+        player1.pacman_x = player1.pacman_x + player1.speed * p1pacmand_x;
+        player1.pacman_y = player1.pacman_y + player1.speed * p1pacmand_y;
+        int blockX, blockY;
+        if (p1pacmand_x == 1 && ((player1.pacman_x - 9) % BLOCK_SIZE != 0)) {
+            blockX = (int) ((player1.pacman_x - 9) / BLOCK_SIZE) + 1;
+            blockY = (int) (player1.pacman_y / BLOCK_SIZE);
+        }  
+        else if (p1pacmand_y == 1 && ((player1.pacman_y - 9) % BLOCK_SIZE != 0)) {
+            blockX = (int) (player1.pacman_x / BLOCK_SIZE);
+            blockY = (int) ((player1.pacman_y - 9) / BLOCK_SIZE) + 1;
+        }
+        else {
+            blockX = (int) (player1.pacman_x / BLOCK_SIZE);
+            blockY = (int) (player1.pacman_y / BLOCK_SIZE);
+        } 
+        path.update(blockX, blockY);
+        int eatItem = item.getItem(blockX, blockY);
+        if (eatItem == 1) {
+            try {
+                Thread.sleep(200);
+                } catch (InterruptedException e) {
+                    
+                }
+            for (int i = 0; i < 4; i++) {
+                ghost[i].freeze = 1;
+            }
+        }
+        else if (eatItem == 2) {
+            player1.speedUp();
+        }
+        else if (eatItem == 3) {
+            p1score.life = Math.min(5, p1score.life + 1);
+        }
+    }
 
+    private void movePacman2() {
+        int pos, ch;
 
-        if (p2dir.x == -p2pacmand_x && p2dir.y == -p2pacmand_y) {
+        if (p2dir.x == 0 && p2dir.y == 0) return;
+
+         if (p2dir.x == -p2pacmand_x && p2dir.y == -p2pacmand_y) {
             p2pacmand_x = p2dir.x;
             p2pacmand_y = p2dir.y;
             player2.view_x = p2dir.x;
             player2.view_y = p2dir.y;
         }
 
+ 
         if (player2.pacman_x % BLOCK_SIZE == 0 && player2.pacman_y % BLOCK_SIZE == 0) {
-            p2pos = player2.pacman_x / BLOCK_SIZE + N_BLOCKS * (int) (player2.pacman_y / BLOCK_SIZE);
-            p2ch = maze.data[p2pos];
+            pos = player2.pacman_x / BLOCK_SIZE + N_BLOCKS * (int) (player2.pacman_y / BLOCK_SIZE);
+            ch = maze.data[pos]; 
 
-            if ((p2ch & 16) != 0) {
-                maze.data[p2pos] -= 16;
-                p2score++;
+            if ((ch & 16) != 0) {
+                maze.data[pos] -= 16;
+                p2score.score++;
             }
 
-             
+            if ((ch & 32) != 0) {
+                maze.data[pos] -= 32;
+                for (int i = 0; i < 4; i++) {
+                    ghost[i].weak();
+                }
+                player2.change(4);
+                try {
+                    Thread.sleep(200);
+                } catch (InterruptedException e) {
+                    
+                }
+            }
 
             if (p2dir.x != 0 || p2dir.y != 0) {
-                if (!((p2dir.x == -1 && p2dir.y == 0 && (p2ch & 1) != 0)
-                        || (p2dir.x == 1 && p2dir.y == 0 && (p2ch & 4) != 0)
-                        || (p2dir.x == 0 && p2dir.y == -1 && (p2ch & 2) != 0)
-                        || (p2dir.x == 0 && p2dir.y == 1 && (p2ch & 8) != 0))) {
+                if (!((p2dir.x == -1 && p2dir.y == 0 && (ch & 1) != 0)
+                        || (p2dir.x == 1 && p2dir.y == 0 && (ch & 4) != 0)
+                        || (p2dir.x == 0 && p2dir.y == -1 && (ch & 2) != 0)
+                        || (p2dir.x == 0 && p2dir.y == 1 && (ch & 8) != 0))) {
                     p2pacmand_x = p2dir.x;
                     p2pacmand_y = p2dir.y;
                     player2.view_x = p2dir.x;
                     player2.view_y = p2dir.y;
                 }
             }
-
-            if (((p2pacmand_x == -1 && p2pacmand_y == 0) && (p2ch & 1) != 0)
-                    || ((p2pacmand_x == 1 && p2pacmand_y == 0) && (p2ch & 4) != 0)
-                    || ((p2pacmand_x == 0 && p2pacmand_y == -1)  && (p2ch & 2) != 0)
-                    || ((p2pacmand_x == 0 && p2pacmand_y == 1) && (p2ch & 8) != 0)) {
+            // Check for standstill
+            if (((p2pacmand_x == -1 && p2pacmand_y == 0) && (ch & 1) != 0)
+                    || ((p2pacmand_x == 1 && p2pacmand_y == 0) && (ch & 4) != 0)
+                    || ((p2pacmand_x == 0 && p2pacmand_y == -1)  && (ch & 2) != 0)
+                    || ((p2pacmand_x == 0 && p2pacmand_y == 1) && (ch & 8) != 0)) {
                 p2pacmand_x = 0;
                 p2pacmand_y = 0;
             }
+
         }
-        player2.pacman_x = player2.pacman_x + 3 * p2pacmand_x;
-        player2.pacman_y = player2.pacman_y + 3 * p2pacmand_y;
+        player2.pacman_x = player2.pacman_x + player2.speed * p2pacmand_x;
+        player2.pacman_y = player2.pacman_y + player2.speed * p2pacmand_y;
+        int blockX, blockY;
+        if (p2pacmand_x == 1 && ((player2.pacman_x - 9) % BLOCK_SIZE != 0)) {
+            blockX = (int) ((player2.pacman_x - 9) / BLOCK_SIZE) + 1;
+            blockY = (int) (player2.pacman_y / BLOCK_SIZE);
+        }  
+        else if (p2pacmand_y == 1 && ((player2.pacman_y - 9) % BLOCK_SIZE != 0)) {
+            blockX = (int) (player2.pacman_x / BLOCK_SIZE);
+            blockY = (int) ((player2.pacman_y - 9) / BLOCK_SIZE) + 1;
+        }
+        else {
+            blockX = (int) (player2.pacman_x / BLOCK_SIZE);
+            blockY = (int) (player2.pacman_y / BLOCK_SIZE);
+        } 
+        // path.update(blockX, blockY);
+        int eatItem = item.getItem(blockX, blockY);
+        if (eatItem == 1) {
+            try {
+                Thread.sleep(200);
+                } catch (InterruptedException e) {
+                    
+                }
+            for (int i = 0; i < 4; i++) {
+                ghost[i].freeze = 1;
+            }
+        }
+        else if (eatItem == 2) {
+            player2.speedUp();
+        }
+        else if (eatItem == 3) {
+            p2score.life = Math.min(5, p2score.life + 1);
+        }
     }
 
+
     private void drawPacman(Graphics2D g2d) {
-        if (pacsLifeP1 > 0) {
+        if (p1score.life > 0) {
             player1.drawPacman(g2d);
         }
-        if (pacsLifeP2 > 0) {
+        if (p2score.life > 0) {
             player2.drawPacman(g2d);
         }
     }
     
     
-    
     private void initGame() {
-        pacsLifeP1 = 2;
-        pacsLifeP2 = 2;
-        p1score = -1;
-        p2score = -1;
+        p1score.life = 2;
+        p2score.life = 2;
+        p1score.score = -1;
+        p2score.score = -1;
         restartgame();
     }
 
     private void restartgame() {
         Map maps = new Map(N_BLOCKS);
         maze.data = maps.Get_data("map1.txt");
+        path = new Path(N_BLOCKS);
+        item = new Item();
+        path.loadMap("map1.txt");
+        path.update(0, 0);
 
         player1.pacman_x = 0 * BLOCK_SIZE;
         player1.pacman_y = 0 * BLOCK_SIZE;
         player2.pacman_x = 25 * BLOCK_SIZE;
         player2.pacman_y = 25 * BLOCK_SIZE;
+        player1.speed = 3;
+        player2.speed = 3;
         player1.view_x = 0;
         player1.view_y = 0;
         player2.view_x = 0;
@@ -318,6 +467,10 @@ public class Board2 extends JPanel implements ActionListener {
         for (int i = 11; i < 15; i++) {
             ghost[i - 11].x = i * BLOCK_SIZE;
             ghost[i - 11].y = 12 * BLOCK_SIZE;
+            ghost[i - 11].ori_x = i * BLOCK_SIZE;
+            ghost[i - 11].ori_y = 12 * BLOCK_SIZE;
+            ghost[i - 11].state = 0;
+            ghost[i - 11].speed = 3;
         }
       
     }
@@ -345,32 +498,39 @@ public class Board2 extends JPanel implements ActionListener {
         g2d.setColor(Color.black);
         g2d.fillRect(0, 0, d.width, d.height);
 
-      
-        if (inGame) {
+        if (p1score.life <= 0 && p2score.life <= 0) {
+            GameOver game = new GameOver();
+            game.showImage(g2d);
+        }
+        else if (inGame) {
             playGame(g2d);
             maze.drawMaze(g2d);
-            drawScore(g2d);
+            p1score.drawScore(g2d, SCREEN_SIZE);
+            p2score.drawScore(g2d, SCREEN_SIZE + 20);
+            item.drawItem(g2d);
+            movePacman1();
+            movePacman2();
             drawPacman(g2d);
-            movePacman();
             moveGhost(g2d);
-            if ((dying_state & 1) != 0) {
-                player1.pacman_x = 0 * BLOCK_SIZE;
-                player1.pacman_y = 0 * BLOCK_SIZE;
-                pacsLifeP1--;
-            }
-            if ((dying_state & 2) != 0) {
-                player2.pacman_x = 25 * BLOCK_SIZE;
-                player2.pacman_y = 25 * BLOCK_SIZE;
-                pacsLifeP2--;
-            }
-            dying_state = 0;
+            death();
         } 
         else {
             showIntroScreen(g2d);
         }
-        if (pacsLifeP1 <= 0 && pacsLifeP2 <= 0) {
-            inGame = false;
+    }
+
+    private void death() {
+        if ((dying_state & 1) != 0) {
+            player1.pacman_x = 0 * BLOCK_SIZE;
+            player1.pacman_y = 0 * BLOCK_SIZE;
+            p1score.life--;
         }
+        if ((dying_state & 2) != 0) {
+            player2.pacman_x = 25 * BLOCK_SIZE;
+            player2.pacman_y = 25 * BLOCK_SIZE;
+            p2score.life--;
+        }
+        dying_state = 0;
     }
 
     class TAdapter extends KeyAdapter {

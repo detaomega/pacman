@@ -13,7 +13,6 @@ public class PacmanDouble extends JFrame {
         Board2 bd = new Board2();
         add(bd);
         setTitle("Pacman");
-        setDefaultCloseOperation(EXIT_ON_CLOSE);
         setSize(650, 710);
         setLocationRelativeTo(null);
         setVisible(true);
