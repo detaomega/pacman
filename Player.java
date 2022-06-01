@@ -12,6 +12,7 @@ public class Player {
     private Image [] pacmanright = new Image[5];
     public int view_x, view_y, pacman_x, pacman_y, speed, state, life;
     private int control = 0, current_image[] = {0, 1, 2, 3, 4, 3, 2, 1}, show = 0;
+    private int speedTime;
 
     public Player(String s) {
         pacmanup[0] = new ImageIcon("images/" + s + "/up1.png").getImage();
@@ -36,7 +37,9 @@ public class Player {
         pacmanright[4] = new ImageIcon("images/" + s + "/right4.png").getImage();
         life = 3;
         state = 0;
+        speedTime = 0;
     }
+    
 
     public void drawPacman(Graphics2D g2d) {
         control = (control + 1) % 8;
@@ -56,6 +59,12 @@ public class Player {
         else if (view_x == 0 && view_y == 0) {
             g2d.drawImage(pacmanleft[0], pacman_x, pacman_y, null);
         }
+        if (speedTime > 0) {
+            speedTime--;
+            if (speedTime == 0) {
+                change(3);
+            }
+        }
     }
 
     public void change(int newSpeed) {
@@ -63,5 +72,9 @@ public class Player {
         pacman_y = pacman_y / (newSpeed) * newSpeed;
         speed = newSpeed;
     }
- 
+    
+    public void speedUp() {
+        change(6);
+        speedTime = 100;
+    }
 }

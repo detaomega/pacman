@@ -12,8 +12,8 @@ public class Ghost {
     private Image []weak2;
     private Image eye;
     public int nextx, nexty, x, y, control = 0, ori_x, ori_y, count = 0, speed;
-    public int state = 0;
-
+    public int state = 0, freeze, freeze_time;
+    private long time1, time2;
 
     public void loadImages(String s) {
 
@@ -35,6 +35,8 @@ public class Ghost {
         weak2[0] = new ImageIcon("images/ghostweak/ghost3.png").getImage();
         weak2[1] = new ImageIcon("images/ghostweak/ghost4.png").getImage();
         eye = new ImageIcon("images/ghostEye/eye.png").getImage();
+        freeze = 0;
+        freeze_time = 0;
     
     }
     
@@ -47,19 +49,20 @@ public class Ghost {
         ghostdown = new Image[2];
         ghostright = new Image[2];
     }
+
     private void timer() {
         count++;
-        if (count >= 112) {
+    
+        if (count >= 136) {
             if (count % 4 >= 2) state = 2;
             else state = 1;
         }
-        if (count == 140) {
+        if (count == 172) {
             state = 0;
             count = 0;
             change(3);
         }
     }
-
 
     public void drawGhost(Graphics2D g2d) {
         if (state == 1) {
@@ -83,14 +86,22 @@ public class Ghost {
         else
             g2d.drawImage(ghostdown[control], x, y, null);
         control = control ^ 1;
+        if (freeze == 1) {
+            freeze_time++;
+            if (freeze_time == 125) {
+                freeze = 0;
+                freeze_time = 0;
+            }
+        }
     }
 
     public void weak() {
         count = 0;
         state = 1;
         change(2);
+        time1 = System.currentTimeMillis();
     }
-    
+
     public void change(int newSpeed) {
         x = x / (newSpeed) * newSpeed;
         y = y / (newSpeed) * newSpeed;
