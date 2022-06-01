@@ -96,7 +96,7 @@ public class Board extends JPanel implements ActionListener {
                 if (ghost[i].state == 3) {
                     int next = 0;
                     Path recover = new Path(N_BLOCKS);
-                    recover.loadMap("map.txt");
+                    recover.loadMap("map1.txt");
                     recover.update((int) ghost[i].ori_x / BLOCK_SIZE, (int) (ghost[i].ori_y / BLOCK_SIZE));
                     next = recover.next((int) ghost[i].x / BLOCK_SIZE, (int) (ghost[i].y / BLOCK_SIZE), ghost[i].state);
                     ghost[i].nextx = dx[next]; 
@@ -289,11 +289,11 @@ public class Board extends JPanel implements ActionListener {
     private void restartgame() {
         Map maps = new Map(N_BLOCKS);
         if (dying == false) {
-            maze.data = maps.Get_data("map.txt");
+            maze.data = maps.Get_data("map1.txt");
         }
         path = new Path(N_BLOCKS);
         item = new Item();
-        path.loadMap("map.txt");
+        path.loadMap("map1.txt");
         player1.pacman_x = 0 * BLOCK_SIZE;
         player1.pacman_y = 0 * BLOCK_SIZE;
         player1.speed = 3;
