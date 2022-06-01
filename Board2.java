@@ -544,13 +544,14 @@ public class Board2 extends JPanel implements ActionListener {
         else if (state != 0) {
             maze.drawMaze(g2d);
             p1score.drawScore(g2d, SCREEN_SIZE);
+            p2score.drawScore(g2d, SCREEN_SIZE + 22);
             drawDeadAnimation(g2d);
         }
         else if (inGame) {
             playGame(g2d);
             maze.drawMaze(g2d);
             p1score.drawScore(g2d, SCREEN_SIZE);
-            p2score.drawScore(g2d, SCREEN_SIZE + 20);
+            p2score.drawScore(g2d, SCREEN_SIZE + 22);
             item.drawItem(g2d);
             drawPacman(g2d);
             moveGhost(g2d);
