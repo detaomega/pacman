@@ -22,7 +22,7 @@ public class Board2 extends JPanel implements ActionListener {
 
     private int  p1pacmand_x, p1pacmand_y,p2pacmand_x, p2pacmand_y;
     private Point p1dir, p2dir; // 判斷方向
-
+    private int state = 0, dying_count = 0;
     private Player player1, player2;
     private Ghost [] ghost;  
     private Maze maze;
@@ -190,9 +190,10 @@ public class Board2 extends JPanel implements ActionListener {
                     && inGame && ghost[i].state != 3
                     && p1score.life > 0) {
                 if (ghost[i].state == 0) {
-                   dying_state |= 1;
-                   try {
-                        Thread.sleep(400);
+                    dying_state |= 1;
+                    state = 1;
+                    try {
+                        Thread.sleep(150);
                     } catch (InterruptedException e) {
                     
                     }
@@ -205,9 +206,9 @@ public class Board2 extends JPanel implements ActionListener {
                     catch (InterruptedException e) {
                     
                     }
-                    ghost[i].state = 3;
-                    ghost[i].change(8);
                 }
+                ghost[i].state = 3;
+                ghost[i].change(8);
             }
             if (player2.pacman_x > (ghost[i].x - 15) 
                     && player2.pacman_x < (ghost[i].x + 15)
@@ -217,8 +218,9 @@ public class Board2 extends JPanel implements ActionListener {
                     && p2score.life > 0) {
                 if (ghost[i].state == 0) {
                    dying_state |= 2;
-                   try {
-                        Thread.sleep(400);
+                   state = 2;
+                    try {
+                        Thread.sleep(150);
                     } catch (InterruptedException e) {
                     
                     }
@@ -231,9 +233,9 @@ public class Board2 extends JPanel implements ActionListener {
                     catch (InterruptedException e) {
                     
                     }
-                    ghost[i].state = 3;
-                    ghost[i].change(8);
                 }
+                ghost[i].state = 3;
+                ghost[i].change(8);
             }
         }
     }
@@ -424,9 +426,11 @@ public class Board2 extends JPanel implements ActionListener {
 
     private void drawPacman(Graphics2D g2d) {
         if (p1score.life > 0) {
+            movePacman1();
             player1.drawPacman(g2d);
         }
         if (p2score.life > 0) {
+            movePacman2();
             player2.drawPacman(g2d);
         }
     }
@@ -491,6 +495,41 @@ public class Board2 extends JPanel implements ActionListener {
         doDrawing(g);
     }
 
+    private void drawDeadAnimation(Graphics2D g) {
+        if (state == 1) {
+            g.setColor(new Color(255, 254, 56));
+            try {
+                Thread.sleep(100);
+                if  (300 - 30 * dying_count >= 0)
+                g.fillArc(player1.pacman_x, player1.pacman_y, 22, 22, 120 + dying_count * 15, 300 - 30 * dying_count);
+            } catch (InterruptedException e) {
+                    
+            }
+            if (dying_count == 12) {
+                dying_count = 0;
+                state = 0;
+            }
+            
+        }
+        else {
+            g.setColor(new Color(0, 255, 0));
+            try {
+                Thread.sleep(100);
+                if  (300 - 30 * dying_count >= 0)
+                g.fillArc(player2.pacman_x, player2.pacman_y, 22, 22, 120 + dying_count * 15, 300 - 30 * dying_count);
+            } catch (InterruptedException e) {
+                    
+            }
+        }
+        dying_count++;
+        if (dying_count == 12) {
+            dying_count = 0;
+            state = 0;
+            death();
+            restartgame();
+
+        }
+    }
     private void doDrawing(Graphics g) {
 
         Graphics2D g2d = (Graphics2D) g;
@@ -502,17 +541,20 @@ public class Board2 extends JPanel implements ActionListener {
             GameOver game = new GameOver();
             game.showImage(g2d);
         }
+        else if (state != 0) {
+            maze.drawMaze(g2d);
+            p1score.drawScore(g2d, SCREEN_SIZE);
+            drawDeadAnimation(g2d);
+        }
         else if (inGame) {
             playGame(g2d);
             maze.drawMaze(g2d);
             p1score.drawScore(g2d, SCREEN_SIZE);
             p2score.drawScore(g2d, SCREEN_SIZE + 20);
             item.drawItem(g2d);
-            movePacman1();
-            movePacman2();
             drawPacman(g2d);
             moveGhost(g2d);
-            death();
+            
         } 
         else {
             showIntroScreen(g2d);
@@ -521,13 +563,9 @@ public class Board2 extends JPanel implements ActionListener {
 
     private void death() {
         if ((dying_state & 1) != 0) {
-            player1.pacman_x = 0 * BLOCK_SIZE;
-            player1.pacman_y = 0 * BLOCK_SIZE;
             p1score.life--;
         }
         if ((dying_state & 2) != 0) {
-            player2.pacman_x = 25 * BLOCK_SIZE;
-            player2.pacman_y = 25 * BLOCK_SIZE;
             p2score.life--;
         }
         dying_state = 0;

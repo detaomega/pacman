@@ -20,8 +20,8 @@ public class Board extends JPanel implements ActionListener {
 
 
     private int req_x, req_y;
+    private int state = 0, dying_count = 0;
     private boolean dying;
-
     private Player player1;
     private Ghost [] ghost;
     private Score p1score;
@@ -62,7 +62,7 @@ public class Board extends JPanel implements ActionListener {
         timer.start();
     }
 
-    private void playGame(Graphics2D g2d) {
+    private void playGame() {
         if (maze.checkMaze()) {
             restartgame();
         }
@@ -168,8 +168,9 @@ public class Board extends JPanel implements ActionListener {
                     && inGame && ghost[i].state != 3) {
                 if (ghost[i].state == 0) {
                    dying = true; 
+                   state = 1;
                    try {
-                        Thread.sleep(400);
+                        Thread.sleep(150);
                     } catch (InterruptedException e) {
                     
                     }
@@ -177,7 +178,7 @@ public class Board extends JPanel implements ActionListener {
                 else {
                     p1score.score += 100;
                     try {
-                        Thread.sleep(400);
+                        Thread.sleep(150);
                     } 
                     catch (InterruptedException e) {
                     
@@ -275,6 +276,7 @@ public class Board extends JPanel implements ActionListener {
         }
         else if (eatItem == 2) {
             player1.speedUp();
+
         }
         else if (eatItem == 3) {
             p1score.life = Math.min(5, p1score.life + 1);
@@ -337,9 +339,28 @@ public class Board extends JPanel implements ActionListener {
         g2d.setColor(Color.black);
         g2d.fillRect(0, 0, d.width, d.height);
 
-        
-        if (inGame) {
-            playGame(g2d);
+        if (state == 1) {
+            maze.drawMaze(g2d);
+            p1score.drawScore(g2d, SCREEN_SIZE);
+
+            g.setColor(new Color(255, 254, 56));
+            try {
+                Thread.sleep(100);
+                if  (300 - 30 * dying_count >= 0)
+                g.fillArc(player1.pacman_x, player1.pacman_y, 22, 22, 120 + dying_count * 15, 300 - 30 * dying_count);
+            } catch (InterruptedException e) {
+                    
+            }
+            dying_count++;
+            if (dying_count == 12) {
+                dying_count = 0;
+                state = 0;
+                restartgame();
+            }
+            
+        }
+        else if (inGame) {
+            playGame();
             maze.drawMaze(g2d);
             p1score.drawScore(g2d, SCREEN_SIZE);
             item.drawItem(g2d);
@@ -367,7 +388,6 @@ public class Board extends JPanel implements ActionListener {
             endgame = true;
             inGame = false;
         }
-        restartgame();
     }
 
     class TAdapter extends KeyAdapter {
