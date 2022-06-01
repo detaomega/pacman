@@ -13,7 +13,7 @@ public class Ghost {
     private Image eye;
     public int nextx, nexty, x, y, control = 0, ori_x, ori_y, count = 0, speed;
     public int state = 0, freeze, freeze_time;
-    private long time1, time2;
+    
 
     public void loadImages(String s) {
 
@@ -99,7 +99,6 @@ public class Ghost {
         count = 0;
         state = 1;
         change(2);
-        time1 = System.currentTimeMillis();
     }
 
     public void change(int newSpeed) {
@@ -116,5 +115,16 @@ public class Ghost {
             state = 0;
             change(3);
         }
+    }
+
+    public void addGhost(int newX, int newY, String color) {
+        x = newX;
+        y = newY;
+        ori_x = newX;
+        ori_y = newY;
+        loadImages(color);
+        state = 1;
+        count = 40;
+        speed = 0;
     }
 }

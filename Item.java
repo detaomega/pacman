@@ -4,10 +4,12 @@ import javax.swing.*;
 
 public class Item { 
 
-    private Ice ice;
+
+    private Cherry cherry;
     private Apple apple;   
     private Blood blood;
-    private Cherry cherry;
+    private Ice ice;
+    
     public Item() {
         ice = new Ice(5, 12);
         apple = new Apple(0, 5); 
@@ -31,6 +33,9 @@ public class Item {
         }
         else if (blood.eat(x, y)) {
             return 3;
+        }
+        else if (cherry.eat(x, y)) {
+            return 4;
         }
         else 
             return -1;

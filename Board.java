@@ -219,9 +219,14 @@ public class Board extends JPanel implements ActionListener {
 
             if ((ch & 16) != 0) {
                 maze.data[pos] -= 16;
-                p1score.score++;
+                if (maze.player == 1) {
+                    p1score.score += 20;
+                }
+                else {
+                    p1score.score += 20;
+                }
                 eatPoint++;
-                if (eatPoint % 30 == 0 && eatPoint != 0) {
+                if (eatPoint % 40 == 0 && eatPoint != 0) {
                     ghost[ghostNumber] = new Ghost();
                     ghost[ghostNumber].addGhost(12 * BLOCK_SIZE, 12 * BLOCK_SIZE, "Red");
                     ghostNumber++;
@@ -296,6 +301,9 @@ public class Board extends JPanel implements ActionListener {
         }
         else if (eatItem == 3) {
             p1score.life = Math.min(5, p1score.life + 1);
+        }
+        else if (eatItem == 4) {
+            maze.doubleScore(1);
         }
     }
 
