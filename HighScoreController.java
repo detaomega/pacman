@@ -16,7 +16,7 @@ public class HighScoreController {
     @FXML
     void backOnAction(ActionEvent event) throws Exception {
         newstage = new Stage();
-        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("SingleMenu.fxml"));    
+        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("fxml/SingleMenu.fxml"));    
         Parent root = (Parent)fxmlLoader.load();
         SingleController controller = fxmlLoader.<SingleController>getController();
         Scene scene = new Scene(root);

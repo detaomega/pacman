@@ -168,7 +168,7 @@ public class MenuController {
         }
         if(player == 1){
             newstage = new Stage();
-            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("SingleMenu.fxml"));    
+            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("fxml/SingleMenu.fxml"));    
             Parent root = (Parent)fxmlLoader.load();
             SingleController controller = fxmlLoader.<SingleController>getController();
             Scene scene = new Scene(root);
@@ -183,7 +183,7 @@ public class MenuController {
         }
         else if(player == 2){
             newstage = new Stage();
-            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("DoubleMenu.fxml"));    
+            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("fxml/DoubleMenu.fxml"));    
             Parent root = (Parent)fxmlLoader.load();
             DoubleController controller = fxmlLoader.<DoubleController>getController();
             Scene scene = new Scene(root);

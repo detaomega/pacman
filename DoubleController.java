@@ -35,7 +35,7 @@ public class DoubleController {
     @FXML
     void buttonBackClicked(ActionEvent event) throws Exception{
         newstage = new Stage();
-        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("Pacman.fxml"));    
+        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("fxml/Pacman.fxml"));    
         Parent root = (Parent)fxmlLoader.load();
         PacmanController controller = fxmlLoader.<PacmanController>getController();
         Scene scene = new Scene(root);
@@ -56,7 +56,7 @@ public class DoubleController {
     @FXML
     void buttonSettingClicked(ActionEvent event) throws Exception{
         newstage = new Stage();
-        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("Menu.fxml"));    
+        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("fxml/Menu.fxml"));    
         Parent root = (Parent)fxmlLoader.load();
         MenuController controller = fxmlLoader.<MenuController>getController();
         Scene scene = new Scene(root);

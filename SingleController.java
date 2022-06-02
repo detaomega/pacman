@@ -41,7 +41,7 @@ public class SingleController {
     @FXML
     void buttonBackClicked(ActionEvent event) throws Exception{
         newstage = new Stage();
-        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("Pacman.fxml"));    
+        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("fxml/Pacman.fxml"));    
         Parent root = (Parent)fxmlLoader.load();
         PacmanController controller = fxmlLoader.<PacmanController>getController();
         Scene scene = new Scene(root);
@@ -57,7 +57,7 @@ public class SingleController {
     @FXML
     void buttonHighScoreClicked(ActionEvent event) throws Exception{
         newstage = new Stage();
-        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("highscore.fxml"));    
+        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("fxml/highscore.fxml"));    
         Parent root = (Parent)fxmlLoader.load();
         HighScoreController controller = fxmlLoader.<HighScoreController>getController();
         Scene scene = new Scene(root);
@@ -79,7 +79,7 @@ public class SingleController {
     @FXML
     void buttonSettingClicked(ActionEvent event) throws Exception{
         newstage = new Stage();
-        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("Menu.fxml"));    
+        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("fxml/Menu.fxml"));    
         Parent root = (Parent)fxmlLoader.load();
         MenuController controller = fxmlLoader.<MenuController>getController();
         Scene scene = new Scene(root);
