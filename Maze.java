@@ -83,8 +83,8 @@ public class Maze {
         g2d.setColor(fenceColor);
         g2d.setStroke(new BasicStroke(4));
         g2d.drawLine(12 * BLOCK_SIZE + 2, 11 * BLOCK_SIZE, 14 * BLOCK_SIZE - 2, 11 * BLOCK_SIZE);
-        data[11 * N_BLOCKS + 12] |= 64;
-        data[11 * N_BLOCKS + 13] |= 64;
+        data[10 * N_BLOCKS + 12] |= 64;
+        data[10 * N_BLOCKS + 13] |= 64;
         if (doubleTime > 0) {
             doubleTime--;
         }
