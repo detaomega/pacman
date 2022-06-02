@@ -2,7 +2,7 @@
 /* CSS that styles various two-dimensional shapes */
 
 .root {
-     -fx-background-image: url("images/background.jpeg");
+     -fx-background-image: url("../images/single.jpg");
 }
 
 .button {
@@ -17,3 +17,8 @@
     -fx-background-color: linear-gradient(#2A5058, #61a2b1);
 }
 
+.label{
+    -fx-text-fill: white;
+    -fx-font-family: "Silom";
+    -fx-font-weight: bold;
+}

@@ -6,8 +6,15 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
+import javafx.application.Application;
+import java.awt.EventQueue;
+import javax.swing.JFrame;
 
 public class PacmanController {
+    // public Stage first;
+    public Stage newstage;
+    public Stage oldstage;
+
     // enum representing ghost num
     private enum GhostNum {
         ONE(1),
@@ -36,6 +43,9 @@ public class PacmanController {
             return mode;
         }
     };
+    public void setStage(Stage s){
+        oldstage = s;
+    }
 
     private GhostNum num = GhostNum.ONE; 
     private GameMode mode = GameMode.EASY;
@@ -61,33 +71,44 @@ public class PacmanController {
     	buttonSingle = new Button();
     }
 
+
     @FXML
-    void buttonMenuClicked(ActionEvent event) throws Exception {
-        Stage sec = new Stage();
-        Parent root = FXMLLoader.load(getClass().getResource("Menu.fxml"));
+    void buttonSingleClicked(ActionEvent event) throws Exception{
+        newstage = new Stage();
+        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("SingleMenu.fxml"));    
+        Parent root = (Parent)fxmlLoader.load();
+        SingleController controller = fxmlLoader.<SingleController>getController();
         Scene scene = new Scene(root);
-        String css = this.getClass().getResource("menu.css").toExternalForm(); 
+        String css = this.getClass().getResource("css/singlestyle.css").toExternalForm(); 
         scene.getStylesheets().add(css);
-        sec.setTitle("Menu"); // displayed in window's title bar
-        sec.setScene(scene);
-        sec.show();
-    }
-
-
-    @FXML
-    void buttonSingleClicked(ActionEvent event) {
-    	PacmanSingle pms = new PacmanSingle();
+        newstage.setTitle("Single player Menu"); // displayed in window's title bar
+        newstage.setScene(scene);
+        controller.setStage(newstage);
+        
+        newstage.show();
+        oldstage.close();
     }
 
     @FXML
-    void buttonDoubleClicked(ActionEvent event) {
-    	PacmanDouble pmd = new PacmanDouble();
+    void buttonDoubleClicked(ActionEvent event) throws Exception{
+    	//PacmanDouble pmd = new PacmanDouble();
+        newstage = new Stage();
+        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("DoubleMenu.fxml"));    
+        Parent root = (Parent)fxmlLoader.load();
+        DoubleController controller = fxmlLoader.<DoubleController>getController();
+        Scene scene = new Scene(root);
+        String css = this.getClass().getResource("css/doublestyle.css").toExternalForm(); 
+        scene.getStylesheets().add(css);
+        newstage.setTitle("double player Menu"); // displayed in window's title bar
+        newstage.setScene(scene);
+        controller.setStage(newstage);
+        newstage.show();
+        oldstage.close();
     }
 
     @FXML
     void buttonExitClicked(ActionEvent event) {
         System.exit(0);
-
     }
 
 

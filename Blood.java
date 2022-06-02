@@ -1,15 +1,18 @@
 import java.awt.*;
 import java.awt.event.*;
 import javax.swing.*;
+import java.util.ArrayList;
+import java.awt.Point;
 
 public class Blood {
 
     private Image blood;
     private int BLOCK_SIZE = 24;
     public int x, y;
-
+    ArrayList<Point> site;
     public Blood(int x, int y) {
         blood = new ImageIcon("images/" + "playerOne" + "/left4.png").getImage();
+        site = new ArrayList<Point>();
         this.x = x;
         this.y = y; 
     }
@@ -26,5 +29,9 @@ public class Blood {
         }
         else 
             return false;
+    }
+
+    public void addNewItem(int x, int y) {
+
     }
 }
