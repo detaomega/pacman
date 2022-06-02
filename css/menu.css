@@ -2,7 +2,7 @@
 /* CSS that styles various two-dimensional shapes */
 
 #background {
-     -fx-background-image: url("images/menu.jpg");
+     -fx-background-image: url("../images/menu.jpg");
 }
 
 .button {

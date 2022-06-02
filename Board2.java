@@ -4,6 +4,9 @@ import javax.swing.*;
 import java.util.Random;
 
 public class Board2 extends JPanel implements ActionListener {
+    public int mode = 1;
+    public int ghostnum = 1; 
+
     private Dimension d;
     private final Font smallFont = new Font("Helvetica", Font.BOLD, 14);
 
@@ -35,7 +38,9 @@ public class Board2 extends JPanel implements ActionListener {
     private Timer timer;
 
     // constructor
-    public Board2() {
+    public Board2(int n, int m) {
+        ghostnum = n;
+        mode = m;
         initVariables();
         loadImages();
         initBoard();
