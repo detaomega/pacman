@@ -12,8 +12,8 @@ import javafx.stage.Stage;
 public class SingleController {
     public Stage newstage;
     public Stage oldstage;
-    public int mode = 1;
-    public int ghostnum = 1;     
+    public int mode = 2;
+    public int ghostnum = 4;     
 
     @FXML
     private Button buttonHighScore;

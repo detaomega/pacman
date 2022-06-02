@@ -5,11 +5,8 @@ import java.util.Random;
 
 public class Board2 extends JPanel implements ActionListener {
     public int mode = 1;
-    public int ghostnum = 1; 
 
     private Dimension d;
-    private final Font smallFont = new Font("Helvetica", Font.BOLD, 14);
-
 
     private boolean inGame = false;
 
@@ -25,7 +22,7 @@ public class Board2 extends JPanel implements ActionListener {
 
     private int  p1pacmand_x, p1pacmand_y,p2pacmand_x, p2pacmand_y;
     private Point p1dir, p2dir; // 判斷方向
-    private int state, dying_count, ghostNumber, eatPointP1, eatPointP2;
+    private int state, dying_count, ghostNumber, eatPointP1, eatPointP2, initGhostNumber;
     private Player player1, player2;
     private Ghost [] ghost;  
     private Maze maze;
@@ -39,7 +36,7 @@ public class Board2 extends JPanel implements ActionListener {
 
     // constructor
     public Board2(int n, int m) {
-        ghostnum = n;
+        initGhostNumber = n;
         mode = m;
         initVariables();
         loadImages();
@@ -57,9 +54,9 @@ public class Board2 extends JPanel implements ActionListener {
         maze = new Maze(N_BLOCKS);
         d = new Dimension(400, 400);
 
-        ghostNumber = 4;
+        ghostNumber = initGhostNumber;
         ghost = new Ghost[20];
-        for (int i = 0; i < ghostNumber; i++) {
+        for (int i = 0; i < 4; i++) {
             ghost[i] = new Ghost();
         }
         p1dir = new Point(0, 0);
@@ -467,7 +464,7 @@ public class Board2 extends JPanel implements ActionListener {
         path.loadMap("map.txt");
         path.update(0, 0);
 
-        ghostNumber = 4;
+        ghostNumber = initGhostNumber;
         player1.pacman_x = 0 * BLOCK_SIZE;
         player1.pacman_y = 0 * BLOCK_SIZE;
         player2.pacman_x = 25 * BLOCK_SIZE;
@@ -586,7 +583,7 @@ public class Board2 extends JPanel implements ActionListener {
         if ((dying_state & 2) != 0) {
             p2score.life--;
         }
-        ghostNumber = 4;
+        ghostNumber = initGhostNumber;
         for (int i = 0; i < ghostNumber; i++) {
             ghost[i].x = ghost[i].ori_x;
             ghost[i].y = ghost[i].ori_y;

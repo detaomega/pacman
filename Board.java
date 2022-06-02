@@ -23,7 +23,7 @@ public class Board extends JPanel implements ActionListener {
 
     
     private int req_x, req_y;
-    private int state, dying_count, ghostNumber, eatPoint;
+    private int state, dying_count, ghostNumber, eatPoint, initGhostNumber;
     private boolean dying;
     private Player player1;
     private Ghost [] ghost;
@@ -36,7 +36,7 @@ public class Board extends JPanel implements ActionListener {
 
     // constructor
     public Board(int n,int m) {
-        ghostnum = n;
+        initGhostNumber = n;
         mode = m;
         initVariables();
         loadImages();
@@ -64,8 +64,8 @@ public class Board extends JPanel implements ActionListener {
 
         // inital ghost
         ghost = new Ghost[20];
-        ghostNumber = 4;
-        for (int i = 0; i < ghostNumber; i++) {
+        ghostNumber = initGhostNumber;
+        for (int i = 0; i < 4; i++) {
             ghost[i] = new Ghost();
         }
 
@@ -336,7 +336,7 @@ public class Board extends JPanel implements ActionListener {
         req_y = 0;
         
         eatPoint = 0;
-        ghostNumber = 4;
+        ghostNumber = initGhostNumber;
         for (int i = 11; i < 15; i++) {
             ghost[i - 11].x = i * BLOCK_SIZE;
             ghost[i - 11].y = 12 * BLOCK_SIZE;
