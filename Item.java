@@ -36,7 +36,7 @@ public class Item {
         blood.drawBlood(g2d);
         cherry.drawCherry(g2d);
         generateTime = generateTime + 1;
-        if (generateTime % 150 == 0 && generateTime != 0) {
+        if (generateTime % 300 == 0 && generateTime != 0) {
             generateItem();
         }
     }
