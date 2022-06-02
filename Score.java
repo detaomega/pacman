@@ -4,7 +4,7 @@ import javax.swing.*;
 
 
 public class Score {
-    private final Font smallFont = new Font("Helvetica", Font.BOLD, 14);
+    private final Font smallFont = new Font("Silom", Font.BOLD, 18);
     private Image pacman;
     public int score, life;
     public Score(String s) {
