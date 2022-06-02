@@ -276,7 +276,7 @@ public class Board2 extends JPanel implements ActionListener {
                 if (!((p1dir.x == -1 && p1dir.y == 0 && (ch & 1) != 0)
                         || (p1dir.x == 1 && p1dir.y == 0 && (ch & 4) != 0)
                         || (p1dir.x == 0 && p1dir.y == -1 && (ch & 2) != 0)
-                        || (p1dir.x == 0 && p1dir.y == 1 && (ch & 8) != 0))) {
+                        || (p1dir.x == 0 && p1dir.y == 1 && (ch & (8 + 64)) != 0))) {
                     p1pacmand_x = p1dir.x;
                     p1pacmand_y = p1dir.y;
                     player1.view_x = p1dir.x;
@@ -287,7 +287,7 @@ public class Board2 extends JPanel implements ActionListener {
             if (((p1pacmand_x == -1 && p1pacmand_y == 0) && (ch & 1) != 0)
                     || ((p1pacmand_x == 1 && p1pacmand_y == 0) && (ch & 4) != 0)
                     || ((p1pacmand_x == 0 && p1pacmand_y == -1)  && (ch & 2) != 0)
-                    || ((p1pacmand_x == 0 && p1pacmand_y == 1) && (ch & 8) != 0)) {
+                    || ((p1pacmand_x == 0 && p1pacmand_y == 1) && (ch & (8 + 64)) != 0)) {
                 p1pacmand_x = 0;
                 p1pacmand_y = 0;
             }
@@ -380,7 +380,7 @@ public class Board2 extends JPanel implements ActionListener {
                 if (!((p2dir.x == -1 && p2dir.y == 0 && (ch & 1) != 0)
                         || (p2dir.x == 1 && p2dir.y == 0 && (ch & 4) != 0)
                         || (p2dir.x == 0 && p2dir.y == -1 && (ch & 2) != 0)
-                        || (p2dir.x == 0 && p2dir.y == 1 && (ch & 8) != 0))) {
+                        || (p2dir.x == 0 && p2dir.y == 1 && (ch & (8 + 64)) != 0))) {
                     p2pacmand_x = p2dir.x;
                     p2pacmand_y = p2dir.y;
                     player2.view_x = p2dir.x;
@@ -391,7 +391,7 @@ public class Board2 extends JPanel implements ActionListener {
             if (((p2pacmand_x == -1 && p2pacmand_y == 0) && (ch & 1) != 0)
                     || ((p2pacmand_x == 1 && p2pacmand_y == 0) && (ch & 4) != 0)
                     || ((p2pacmand_x == 0 && p2pacmand_y == -1)  && (ch & 2) != 0)
-                    || ((p2pacmand_x == 0 && p2pacmand_y == 1) && (ch & 8) != 0)) {
+                    || ((p2pacmand_x == 0 && p2pacmand_y == 1) && (ch & (8 + 64)) != 0)) {
                 p2pacmand_x = 0;
                 p2pacmand_y = 0;
             }

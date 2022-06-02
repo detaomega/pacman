@@ -255,7 +255,7 @@ public class Board extends JPanel implements ActionListener {
                 if (!((req_x == -1 && req_y == 0 && (ch & 1) != 0)
                         || (req_x == 1 && req_y == 0 && (ch & 4) != 0)
                         || (req_x == 0 && req_y == -1 && (ch & 2) != 0)
-                        || (req_x == 0 && req_y == 1 && (ch & 8) != 0))) {
+                        || (req_x == 0 && req_y == 1 && (ch & (8 + 64)) != 0))) {
                     pacmand_x = req_x;
                     pacmand_y = req_y;
                     player1.view_x = req_x;
@@ -267,7 +267,7 @@ public class Board extends JPanel implements ActionListener {
             if ((pacmand_x == -1 && pacmand_y == 0 && (ch & 1) != 0)
                     || (pacmand_x == 1 && pacmand_y == 0 && (ch & 4) != 0)
                     || (pacmand_x == 0 && pacmand_y == -1 && (ch & 2) != 0)
-                    || (pacmand_x == 0 && pacmand_y == 1 && (ch & 8) != 0)) {
+                    || (pacmand_x == 0 && pacmand_y == 1 && (ch & (8 + 64)) != 0)) {
                 pacmand_x = 0;
                 pacmand_y = 0;
             }

@@ -10,6 +10,7 @@ public class Maze {
     private Color player1Color = new Color(255, 254, 56);
     private Color player2Color = new Color(0, 255, 0);
     private Color mazeColor = new Color(5, 100, 5);
+    private Color fenceColor = new Color(255, 160, 155);
     private int BLOCK_SIZE = 24, N_BLOCKS;
     public int []data = new int[30 * 30];
     private int count;
@@ -79,6 +80,11 @@ public class Maze {
                 i++;
             }
         }
+        g2d.setColor(fenceColor);
+        g2d.setStroke(new BasicStroke(4));
+        g2d.drawLine(12 * BLOCK_SIZE + 2, 11 * BLOCK_SIZE, 14 * BLOCK_SIZE - 2, 11 * BLOCK_SIZE);
+        data[11 * N_BLOCKS + 12] |= 64;
+        data[11 * N_BLOCKS + 13] |= 64;
         if (doubleTime > 0) {
             doubleTime--;
         }
