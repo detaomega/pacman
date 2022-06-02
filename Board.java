@@ -121,7 +121,7 @@ public class Board extends JPanel implements ActionListener {
                     ghost[i].nextx = dx[next]; 
                     ghost[i].nexty = dy[next];
                 }
-                else if (i >= 1 && ghost[i].freeze == 0) {
+                else if (i >= 2 && ghost[i].freeze == 0) {
                     int []randomx = new int[4];
                     int []randomy = new int[4];
                     if ((maze.data[pos] & 1) == 0 && ghost[i].nextx != 1) {

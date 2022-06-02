@@ -26,7 +26,7 @@ public class Board2 extends JPanel implements ActionListener {
     private Player player1, player2;
     private Ghost [] ghost;  
     private Maze maze;
-    private Path path;
+    private Path path1, path2;
     private Item item;
     private Score p1score, p2score;
     // pacman map
@@ -107,7 +107,7 @@ public class Board2 extends JPanel implements ActionListener {
                     ghost[i].nextx = dx[next]; 
                     ghost[i].nexty = dy[next];
                 }
-                else if (i >= 1 && ghost[i].freeze == 0) {
+                else if (i >= 4 && ghost[i].freeze == 0) {
                     int []randomx = new int[4];
                     int []randomy = new int[4];
                     if ((maze.data[pos] & 1) == 0 && ghost[i].nextx != 1) {
@@ -155,8 +155,13 @@ public class Board2 extends JPanel implements ActionListener {
                         ghost[i].nexty = randomy[count];
                     }
                 }
+                else if (ghost[i].chasePlayer == 1) {
+                    int next = path1.next((int) ghost[i].x / BLOCK_SIZE, (int) (ghost[i].y / BLOCK_SIZE), ghost[i].state);
+                    ghost[i].nextx = dx[next]; 
+                    ghost[i].nexty = dy[next];
+                }
                 else {
-                    int next = path.next((int) ghost[i].x / BLOCK_SIZE, (int) (ghost[i].y / BLOCK_SIZE), ghost[i].state);
+                    int next = path2.next((int) ghost[i].x / BLOCK_SIZE, (int) (ghost[i].y / BLOCK_SIZE), ghost[i].state);
                     ghost[i].nextx = dx[next]; 
                     ghost[i].nexty = dy[next];
                 }
@@ -308,7 +313,7 @@ public class Board2 extends JPanel implements ActionListener {
             blockX = (int) (player1.pacman_x / BLOCK_SIZE);
             blockY = (int) (player1.pacman_y / BLOCK_SIZE);
         } 
-        path.update(blockX, blockY);
+        path1.update(blockX, blockY);
         int eatItem = item.getItem(blockX, blockY);
         if (eatItem == 1) {
             try {
@@ -412,7 +417,7 @@ public class Board2 extends JPanel implements ActionListener {
             blockX = (int) (player2.pacman_x / BLOCK_SIZE);
             blockY = (int) (player2.pacman_y / BLOCK_SIZE);
         } 
-        // path.update(blockX, blockY);
+        path2.update(blockX, blockY);
         int eatItem = item.getItem(blockX, blockY);
         if (eatItem == 1) {
             try {
@@ -459,11 +464,13 @@ public class Board2 extends JPanel implements ActionListener {
     private void restartgame() {
         Map maps = new Map(N_BLOCKS);
         maze.data = maps.Get_data("map.txt");
-        path = new Path(N_BLOCKS);
-        path.loadMap("map.txt");
-        item = new Item(path.map);
-        path.update(0, 0);
-
+        path1 = new Path(N_BLOCKS);
+        path2 = new Path(N_BLOCKS);
+        path1.loadMap("map.txt");
+        path2.loadMap("map.txt");
+        item = new Item(path1.map);
+        path1.update(0, 0);
+        path2.update(25, 25);
         ghostNumber = initGhostNumber;
         player1.pacman_x = 0 * BLOCK_SIZE;
         player1.pacman_y = 0 * BLOCK_SIZE;
@@ -490,6 +497,13 @@ public class Board2 extends JPanel implements ActionListener {
             ghost[i - 11].ori_y = 12 * BLOCK_SIZE;
             ghost[i - 11].state = 0;
             ghost[i - 11].speed = 3;
+            if (i % 2 == 0) {
+                ghost[i - 11].chasePlayer = 1;
+            }
+            else {
+                ghost[i - 11].chasePlayer = 0;
+
+            }
         }
       
     }
