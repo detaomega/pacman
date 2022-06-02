@@ -8,7 +8,7 @@ import java.io.*;
 
 public class Path {
     private int pac_x, pac_y, N_BLOCKS;
-    private int [][] map;
+    public int [][] map;
     private int [] dx = {-1, 1, 0, 0};
     private int [] dy = {0, 0, -1, 1};
     private Bfs bfs;

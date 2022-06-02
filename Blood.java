@@ -8,30 +8,28 @@ public class Blood {
 
     private Image blood;
     private int BLOCK_SIZE = 24;
-    public int x, y;
     ArrayList<Point> site;
-    public Blood(int x, int y) {
+    public Blood() {
         blood = new ImageIcon("images/" + "playerOne" + "/left4.png").getImage();
         site = new ArrayList<Point>();
-        this.x = x;
-        this.y = y; 
     }
 
     public void drawBlood(Graphics2D g2d) {
-        g2d.drawImage(blood, x * BLOCK_SIZE, y * BLOCK_SIZE, null);
+        for (Point now : site) {
+            g2d.drawImage(blood, now.x * BLOCK_SIZE, now.y * BLOCK_SIZE, null);
+        }
     }
 
     public boolean eat(int tmpX, int tmpY) {
-        if (tmpX == x && tmpY == y) {
-            x = -1;
-            y = -1;
+        if (site.contains(new Point(tmpX, tmpY))) {
+            site.remove(new Point(tmpX, tmpY));
             return true;
         }
-        else 
+        else   
             return false;
     }
 
-    public void addNewItem(int x, int y) {
-
+    public void addItem(int x, int y) {
+        site.add(new Point(x, y));
     }
 }

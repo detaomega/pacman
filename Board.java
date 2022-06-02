@@ -327,8 +327,8 @@ public class Board extends JPanel implements ActionListener {
             maze.data = maps.Get_data("map.txt");
         }
         path = new Path(N_BLOCKS);
-        item = new Item();
         path.loadMap("map.txt");
+        item = new Item(path.map);
         player1.pacman_x = 0 * BLOCK_SIZE;
         player1.pacman_y = 0 * BLOCK_SIZE;
         player1.speed = 3;

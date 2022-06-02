@@ -460,8 +460,8 @@ public class Board2 extends JPanel implements ActionListener {
         Map maps = new Map(N_BLOCKS);
         maze.data = maps.Get_data("map.txt");
         path = new Path(N_BLOCKS);
-        item = new Item();
         path.loadMap("map.txt");
+        item = new Item(path.map);
         path.update(0, 0);
 
         ghostNumber = initGhostNumber;

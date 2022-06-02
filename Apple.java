@@ -8,26 +8,28 @@ public class Apple {
 
     private Image apple;
     private int BLOCK_SIZE = 24;
-    public int x, y;
     ArrayList<Point> site;
-    public Apple(int x, int y) {
+    public Apple() {
         apple = new ImageIcon("images/Apple/apple.png").getImage();
         site = new ArrayList<Point>();
-        this.x = x;
-        this.y = y; 
     }
 
     public void drawApple(Graphics2D g2d) {
-        g2d.drawImage(apple, x * BLOCK_SIZE, y * BLOCK_SIZE, null);
+        for (Point now : site) {
+            g2d.drawImage(apple, now.x * BLOCK_SIZE, now.y * BLOCK_SIZE, null);
+        }
     }
 
     public boolean eat(int tmpX, int tmpY) {
-        if (tmpX == x && tmpY == y) {
-            x = -1;
-            y = -1;
+        if (site.contains(new Point(tmpX, tmpY))) {
+            site.remove(new Point(tmpX, tmpY));
             return true;
         }
         else   
             return false;
+    }
+
+    public void addItem(int x, int y) {
+        site.add(new Point(x, y));
     }
 }
