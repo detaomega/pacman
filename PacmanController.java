@@ -9,12 +9,15 @@ import javafx.stage.Stage;
 import javafx.application.Application;
 import java.awt.EventQueue;
 import javax.swing.JFrame;
+import java.awt.*;
+import java.awt.event.*;
+import javax.swing.*;
 
 public class PacmanController {
     // public Stage first;
     public Stage newstage;
     public Stage oldstage;
-
+    
     // enum representing ghost num
     private enum GhostNum {
         ONE(1),
@@ -49,7 +52,10 @@ public class PacmanController {
 
     private GhostNum num = GhostNum.ONE; 
     private GameMode mode = GameMode.EASY;
-     
+    
+    @FXML
+    private Button queButton;
+
 	@FXML
     private Button buttonDouble;
 
@@ -69,6 +75,8 @@ public class PacmanController {
     	buttonDouble = new Button();
     	buttonExit = new Button();
     	buttonSingle = new Button();
+        
+        
     }
 
 
@@ -109,6 +117,23 @@ public class PacmanController {
     @FXML
     void buttonExitClicked(ActionEvent event) {
         System.exit(0);
+    }
+
+    @FXML
+    void queClicked(ActionEvent event) throws Exception{
+        //PacmanDouble pmd = new PacmanDouble();
+        newstage = new Stage();
+        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("fxml/rule.fxml"));    
+        Parent root = (Parent)fxmlLoader.load();
+        RuleController controller = fxmlLoader.<RuleController>getController();
+        Scene scene = new Scene(root);
+        String css = this.getClass().getResource("css/rule.css").toExternalForm(); 
+        scene.getStylesheets().add(css);
+        newstage.setTitle("Rule"); // displayed in window's title bar
+        newstage.setScene(scene);
+        controller.setStage(newstage);
+        newstage.show();
+        oldstage.close();
     }
 
 

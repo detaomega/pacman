@@ -6,16 +6,20 @@ import javafx.stage.Stage;
 import java.awt.EventQueue;
 import javax.swing.JFrame;
 
-public class HighScore extends Application {
+public class InputTest extends Application {
     @Override
     public void start(Stage stage) throws Exception {
-        Parent root = FXMLLoader.load(getClass().getResource("fxml/input.fxml"));
+        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("fxml/input.fxml"));    
+        Parent root = (Parent)fxmlLoader.load();
+        InputController controller = fxmlLoader.<InputController>getController();
         Scene scene = new Scene(root);
-        String css = this.getClass().getResource("input.css").toExternalForm(); 
+        String css = this.getClass().getResource("css/input.css").toExternalForm(); 
         scene.getStylesheets().add(css);
-        stage.setTitle("Input");
+        stage.setTitle("Pacman");
         stage.setScene(scene);
         stage.show();
+        controller.setStage(stage);
+
     }
 
     public static void main(String[] args) {

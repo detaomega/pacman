@@ -57,18 +57,19 @@ public class SingleController {
     @FXML
     void buttonHighScoreClicked(ActionEvent event) throws Exception{
         newstage = new Stage();
-        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("fxml/highscore.fxml"));    
+        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("fxml/highscoremenu.fxml"));    
         Parent root = (Parent)fxmlLoader.load();
-        HighScoreController controller = fxmlLoader.<HighScoreController>getController();
+        HighScoreMenuController controller = fxmlLoader.<HighScoreMenuController>getController();
         Scene scene = new Scene(root);
-        String css = this.getClass().getResource("css/highscore.css").toExternalForm(); 
+        String css = this.getClass().getResource("css/highmenu.css").toExternalForm(); 
         scene.getStylesheets().add(css);
-        newstage.setTitle("highscore"); // displayed in window's title bar
+        newstage.setTitle("highscoremenu"); // displayed in window's title bar
         newstage.setScene(scene);
 
         newstage.show();
         oldstage.close();
         controller.setStage(newstage);
+        
     }
 
     @FXML

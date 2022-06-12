@@ -26,6 +26,7 @@
       <Button fx:id="buttonSingle" mnemonicParsing="false" onAction="#buttonSingleClicked" prefHeight="26.0" prefWidth="337.0" text="single" GridPane.columnIndex="1" GridPane.rowIndex="1" />
       <Button fx:id="buttonDouble" mnemonicParsing="false" onAction="#buttonDoubleClicked" prefHeight="26.0" prefWidth="355.0" text="double" GridPane.columnIndex="1" GridPane.rowIndex="2" />
       <Button fx:id="buttonExit" mnemonicParsing="false" onAction="#buttonExitClicked" prefHeight="26.0" prefWidth="355.0" text="exit" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+      <Button fx:id="queButton" alignment="TOP_CENTER" contentDisplay="CENTER" layoutX="10.0" mnemonicParsing="false" onAction="#queClicked" prefHeight="60.0" prefWidth="50.0" GridPane.halignment="RIGHT" GridPane.rowIndex="2" GridPane.valignment="CENTER" />
    </children>
    <padding>
       <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />

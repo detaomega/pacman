@@ -13,12 +13,17 @@ public class PacmanSingle extends JFrame {
         mode = m;
         initUI();
     }
+
     private void initUI() {
         Board bd = new Board(ghostnum, mode);
+        bd.setJFrame(this);
         add(bd);
         setTitle("Pacman");
         setSize(700, 720);
         setLocationRelativeTo(null);
         setVisible(true);
+
     }
+
+    
 }
