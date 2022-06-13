@@ -82,7 +82,7 @@ public class HighScoreController {
         try{
             System.out.println(opfile);
             input = new ObjectInputStream(Files.newInputStream(Paths.get(opfile)));
-            
+            System.out.println(input);
         }
         catch(IOException e){
             System.err.println("Error opening file.");

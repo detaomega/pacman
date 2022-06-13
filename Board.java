@@ -34,7 +34,7 @@ public class Board extends JPanel implements ActionListener {
     private int [] dy = {0, 0, -1, 1};
     private int pacmand_x, pacmand_y;
     private int req_x, req_y;
-    private int state, dying_count, ghostNumber, eatPoint, initGhostNumber;
+    private int state, dying_count, ghostNumber, eatPoint, initGhostNumber, countTime, setMine;
     private boolean dying;
     private Player player1;
     private Ghost [] ghost;
@@ -78,6 +78,9 @@ public class Board extends JPanel implements ActionListener {
 
 
     public void initVariables() {
+
+        countTime = 0;
+        setMine = 0;
         d = new Dimension(400, 400);
 
         //dead Animation
@@ -247,7 +250,7 @@ public class Board extends JPanel implements ActionListener {
             player1.view_x = pacmand_x;
             player1.view_y = pacmand_y;
         }
- 
+
         if (player1.pacman_x % BLOCK_SIZE == 0 && player1.pacman_y % BLOCK_SIZE == 0) {
             pos = player1.pacman_x / BLOCK_SIZE + N_BLOCKS * (int) (player1.pacman_y / BLOCK_SIZE);
             ch = maze.data[pos]; 
@@ -255,7 +258,7 @@ public class Board extends JPanel implements ActionListener {
             if ((ch & 16) != 0) {
                 maze.data[pos] -= 16;
                 if (maze.player == 1) {
-                    p1score.score += 20;
+                    p1score.score += 10;
                 }
                 else {
                     p1score.score += 20;
@@ -339,6 +342,20 @@ public class Board extends JPanel implements ActionListener {
         }
         else if (eatItem == 4) {
             maze.doubleScore(1);
+        }
+        else if (eatItem == 5) {
+            p1score.mine_number++;
+        }
+        else if (eatItem == 6) {
+
+        }
+        if (setMine == 1) {
+            setMine = 0;
+            blockX = (int) (player1.pacman_x / BLOCK_SIZE);
+            blockY = (int) (player1.pacman_y / BLOCK_SIZE);
+            if (p1score.mine_number > 0 && item.setMine(blockX, blockY)) {
+                p1score.mine_number--;
+            } 
         }
     }
 
@@ -456,7 +473,7 @@ public class Board extends JPanel implements ActionListener {
                 }
                 jFrame.setVisible(false);
             }
-            
+       
             
             
             
@@ -508,6 +525,9 @@ public class Board extends JPanel implements ActionListener {
                     req_x = 0;
                     req_y = 1;
                 } 
+                else if (key == KeyEvent.VK_SPACE) {
+                    setMine = 1;
+                }
                 else if (key == KeyEvent.VK_ESCAPE && timer.isRunning()) {
                     inGame = false;
                 } 
@@ -649,12 +669,13 @@ public class Board extends JPanel implements ActionListener {
                 ranked = i + 1;
                 flag = true;
                 break;
-        }
+            }
     }
 
 
     @Override
     public void actionPerformed(ActionEvent e) {
         repaint();
+        countTime++;
     }
 }
