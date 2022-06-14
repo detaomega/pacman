@@ -5,10 +5,6 @@ import java.net.Socket;
 import java.util.Scanner;
 import java.io.*;
 
-/**
- *
- * @author 5442
- */
 public class Server {
   public static void main(String[] args) throws IOException {
         final int PORT = 8787;
@@ -53,7 +49,7 @@ public class Server {
                                 else
                                     out.println(result);
                             }
-                            else {
+                            else if (input.equals("update")){
                                 String type = in.nextLine();
                                 String name = in.nextLine();
                                 String score = in.nextLine();
@@ -67,7 +63,26 @@ public class Server {
                                 } catch (Throwable t) {
                                     t.printStackTrace();
                                 }
-                                out.println("OK!");
+                            }
+                            else {
+                                String type = in.nextLine();
+                                String name = in.nextLine();
+                                String result = "";
+                                try {
+                                    String target = new String("/net/cs/109/109550032/userScore.sh" + " " + type + " " +  name);
+                                    Runtime rt = Runtime.getRuntime();
+                                    Process proc = rt.exec(target);
+                                    proc.waitFor();
+                                    StringBuffer output = new StringBuffer();
+                                    BufferedReader reader = new BufferedReader(new InputStreamReader(proc.getInputStream()));
+                                    String line = "";
+                                    while ((line = reader.readLine())!= null) {
+                                        result += (line + "\n");
+                                    }
+                                } catch (Throwable t) {
+                                    t.printStackTrace();
+                                }
+                                out.println(result);
                             }
                         }
                     } catch (IOException e) { }

@@ -19,10 +19,9 @@ public class Client {
             Scanner in = new Scanner(socket.getInputStream());
         
           
-            out.println("udapte\n" + type + "\n" + name + "\n" + score);
-            System.out.println("udapte " + type + " " + name + " " + score);
+            out.println("update\n" + type + "\n" + name + "\n" + score);
+            System.out.println("update " + type + " " + name + " " + score);
 
-                // System.out.println("Echoed from server: " + in.nextLine());
             
         }
         catch(IOException e){
@@ -53,6 +52,26 @@ public class Client {
         }
     }
 
+    public void getUserScore(String type, String name) {
+        final String HOST = "140.113.235.151";
+        final int PORT = 8787;
+
+        System.out.println("Client started.");
+        try {
+            Socket socket = new Socket(HOST, PORT);
+            PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
+            Scanner in = new Scanner(socket.getInputStream());
+        
+        
+            out.println("userScore\n" + type + "\n" + name);
+                // if (in.nextLine().equals("OK!")) break;
+            Name = name;
+            Score = in.nextLine();
+        }
+        catch(IOException e){
+            System.err.println("Error opening file.");
+        }
+    }
     public String getName() {
         return Name;
     }
