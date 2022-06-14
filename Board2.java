@@ -21,7 +21,7 @@ public class Board2 extends JPanel implements ActionListener {
  
 
     private int  p1pacmand_x, p1pacmand_y,p2pacmand_x, p2pacmand_y;
-    private Point p1dir, p2dir; // 判斷方向
+    private Point p1dir, p2dir; 
     private int state, dying_count, ghostNumber, eatPointP1, eatPointP2, initGhostNumber;
     private Player player1, player2;
     private Ghost [] ghost;  
@@ -66,7 +66,7 @@ public class Board2 extends JPanel implements ActionListener {
         p1score = new Score("playerOne");
         p2score = new Score("playerTwo");
         dying_state = 0;
-        timer = new Timer(40, this); // 每0.04秒repaint
+        timer = new Timer(40, this); 
         timer.start();
     }
 

@@ -105,7 +105,7 @@ public class Board extends JPanel implements ActionListener {
         player1 = new Player("playerOne");
         p1score = new Score("playerOne");
         maze = new Maze(N_BLOCKS);
-        timer = new Timer(40, this); // 每0.04秒repaint
+        timer = new Timer(40, this);
         
     }
 

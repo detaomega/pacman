@@ -18,7 +18,7 @@ public class InputController {
     public Stage newstage;
     public Stage oldstage;
     private static ObjectOutputStream output;
-    private int ranked = 5; // 名次
+    private int ranked = 5;
     private static String oppath = "";
     private int score;
     private static Rank[] rd;
