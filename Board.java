@@ -16,12 +16,15 @@ public class Board extends JPanel implements ActionListener {
     private static ObjectOutputStream output;
     private static ObjectInputStream input;
     private static String oppath = "";
+    private String gameMode = "";
     private static Rank[] r = new Rank[5];
     private boolean flag = false;
     private static Rank tmp;
     private int ranked; // 名次
     private boolean onlyexecute = true;
-
+    private Client client;
+    
+    
     public int mode = 1;
     public int ghostnum = 1; 
     private Dimension d;
@@ -53,17 +56,19 @@ public class Board extends JPanel implements ActionListener {
         //String modestring = "";
         if(mode == 1){
             oppath = "score/Easy.bin";
+            gameMode = "Easy";
         }
         else if(mode == 2){
             oppath = "score/Medium.bin";
+            gameMode = "Medium";
         }
         else {
             oppath = "score/Hard.bin";
+            gameMode = "Hard";
         }
-        //oppath = "score/";
+        initBoard();
         initVariables();
         loadImages();
-        initBoard();
     }
 
     public void initBoard() {
@@ -76,13 +81,12 @@ public class Board extends JPanel implements ActionListener {
         jFrame = f;
     }
 
-
     public void initVariables() {
 
         countTime = 0;
         setMine = 0;
         d = new Dimension(400, 400);
-
+        client = new Client();
         //dead Animation
         dying_count = 0;
         state = 0;
@@ -102,7 +106,7 @@ public class Board extends JPanel implements ActionListener {
         p1score = new Score("playerOne");
         maze = new Maze(N_BLOCKS);
         timer = new Timer(40, this); // 每0.04秒repaint
-        timer.start();
+        
     }
 
     private void playGame() {
@@ -258,10 +262,10 @@ public class Board extends JPanel implements ActionListener {
             if ((ch & 16) != 0) {
                 maze.data[pos] -= 16;
                 if (maze.player == 1) {
-                    p1score.score += 10;
+                    p1score.score += 20;
                 }
                 else {
-                    p1score.score += 20;
+                    p1score.score += 10;
                 }
                 eatPoint++;
                 if (eatPoint % 40 == 0 && eatPoint != 0) {
@@ -452,34 +456,25 @@ public class Board extends JPanel implements ActionListener {
         else if (endgame == true) {
             
             // System.out.println(oppath);
-            
+
             GameOver game = new GameOver();
             game.showImage(g2d);
-            if(onlyexecute){
-                onlyexecute = false;
-                checkpoint();
-                if(flag){
-                    name = JOptionPane.showInputDialog("Enter your name:");
-                    JOptionPane.showMessageDialog(null, "your name is " + name +"\n"+"your rank is "+ ranked +"\n");
-                    outputopenFile();
-                    
-                    rewrite();
-                    addRecord();
-                    outputcloseFile();
-                    System.out.println("debug");
-                }
-                else{
-                    JOptionPane.showMessageDialog(null, "Bye!!!" + "\n");
-                }
-                jFrame.setVisible(false);
-            }
-       
-            
-            
+            client.updateRecord(gameMode, name, p1score.score);
+            timer.stop();
             
         }
         else {
-            showIntroScreen(g2d);
+            if(onlyexecute) {
+                onlyexecute = false;
+                name = JOptionPane.showInputDialog("Enter your name:");
+                // client.updateRecord(gameMode, name, p1score.score);
+                
+                timer.start();
+            }
+            else {
+            
+                showIntroScreen(g2d);
+            }
         }
 
     }
@@ -547,131 +542,6 @@ public class Board extends JPanel implements ActionListener {
             }
         }
     }
-
-    public void rewrite(){
-        Rank add = new Rank(name, p1score.score);
-        Rank move = new Rank(r[ranked - 1]);
-        r[ranked - 1] = add;
-        for(int i = ranked ; i < 5;i++){
-            System.out.println(i);
-            Rank tmprank = new Rank(r[ranked]);
-            r[ranked] = move;
-            move = tmprank;
-        }
-    }
-
-    public static void addRecord(){
-        // Scanner input = new Scanner(System.in);
-        // System.out.println("Enter : ");
-        int i = 0;
-        while(i < 5){
-            try{
-                output.writeObject(r[i]);
-                i++;
-            }
-            catch(IOException io){
-                System.out.println("Error write form file");
-                //System.exit(1);
-            }
-            catch(NoSuchElementException e){
-                System.out.println("Invalid input, Please try again");
-                //input.nextLine();
-                //System.exit(1);
-            }   
-        }
-        
-    }
-
-
-    public static void outputcloseFile(){
-        try{
-            if(output != null)
-                output.close();
-        }
-        catch(IOException e){
-            System.err.println("Error opening file.");
-            System.exit(1);
-        }
-
-    }
-
-
-    public static void inputcloseFile(){
-        try{
-            if(input != null)
-                input.close();
-        }
-        catch(IOException e){
-            System.err.println("Error opening file.");
-            System.exit(1);
-        }
-
-    }
-
-    public static void readRecord(){
-        int i = 0;
-        try{
-            //System.out.println("hhhh");
-            while(i < 5){
-                System.out.println(i);
-                tmp = ((Rank)input.readObject());
-                System.out.println(tmp.getName());
-                r[i] = new Rank(tmp);
-                i++;    
-            }
-            
-        }
-        catch(EOFException e){
-            System.out.println("%nno more records%n");
-            //System.exit(1);
-        }
-        catch(ClassNotFoundException c){
-            System.err.println("Invalid object type");
-            //System.exit(1);
-        }
-        catch(IOException io){
-
-            System.out.println(io.getMessage());
-            //System.exit(1);
-        }
-    }
-
-    public static void outputopenFile(){
-        try{
-            output = new ObjectOutputStream(Files.newOutputStream(Paths.get(oppath)));
-        }
-        catch(IOException e){
-            System.err.println("Error opening file.");
-            System.exit(1);
-        }
-    }
-
-    public static void inputopenFile(){
-        try{
-            input = new ObjectInputStream(Files.newInputStream(Paths.get(oppath) ) );
-        }
-        catch(IOException e){
-            System.err.println("Error opening file.");
-            System.exit(1);
-        }
-    }
-
-    public void checkpoint(){
-        inputopenFile();
-        readRecord();
-        inputcloseFile();
-        checkRank();
-    }
-
-    public void checkRank(){
-        for(int i = 0;i < 5 ;i++)
-            if(r[i].score < p1score.score){
-                ranked = i + 1;
-                flag = true;
-                break;
-            }
-    }
-
 
     @Override
     public void actionPerformed(ActionEvent e) {

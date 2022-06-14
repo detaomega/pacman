@@ -57,45 +57,29 @@ public class HighScoreController {
     private static String m;
     private static Rank tmp;
 
-    private static String opfile;
+    private static String mode;
     private static String sc;
     private static String name;
     private static Rank[] r= new Rank[5];
-
+    private Client client;
     public void setModeTitle(String s){
         //String newCopy = String.copyValueOf(first.toCharArray());
-        m = String.copyValueOf(s.toCharArray());
-        System.out.println(m);
-        String mode = "Mode : " + s;
-        modetitle.setText(mode);
-        opfile = "score/" + s + ".bin";
+        mode = s;
+        modetitle.setText("mode : " + s);
     }
     
     public void setscore(){
-        openFile();
-        readRecord();
-        closeFile();
+        client = new Client();
     }
 
 
-    public static void openFile(){
-        try{
-            System.out.println(opfile);
-            input = new ObjectInputStream(Files.newInputStream(Paths.get(opfile)));
-            System.out.println(input);
-        }
-        catch(IOException e){
-            System.err.println("Error opening file.");
-            System.exit(1);
-        }
-    }
-
-    public  void setlabel(){
-        for(int i = 0; i < 5 ; i++){
-            Rank t = new Rank(r[i]);
-            sc = Integer.toString(t.score);
-            name = t.name;
-            switch(i+1){
+    public void setlabel() {
+        for(int i = 1; i <= 5 ; i++) {
+            client.getRecord(mode, i);
+            // Rank t = new Rank(r[i]);
+            sc = client.getName();
+            name = client.getScore();
+            switch(i){
                 case 1 :
                     score1.setText(sc);
                     name1.setText(name);
@@ -119,47 +103,6 @@ public class HighScoreController {
 
             }
         } 
-    }
-
-    public static void readRecord(){
-        int i = 0;
-        try{
-            System.out.println("hhhh");
-            while(true){
-                System.out.println(i);
-                tmp = ((Rank)input.readObject());
-                System.out.println(tmp.getName());
-                r[i] = new Rank(tmp);
-                //setlabel();
-                i++;    
-            }
-            
-        }
-        catch(EOFException e){
-            System.out.println("%nno more records%n");
-            //System.exit(1);
-        }
-        catch(ClassNotFoundException c){
-            System.err.println("Invalid object type");
-            //System.exit(1);
-        }
-        catch(IOException io){
-
-            System.out.println(io.getMessage());
-            //System.exit(1);
-        }
-    }
-
-    public static void closeFile(){
-        try{
-            if(input != null)
-                input.close();
-        }
-        catch(IOException e){
-            System.err.println("Error opening file.");
-            System.exit(1);
-        }
-
     }
 
     @FXML
