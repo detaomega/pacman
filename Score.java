@@ -31,6 +31,7 @@ public class Score {
     }
 
     public void drawHighestScore(Graphics2D g) {
+        if (highest == -1) return;
         Font scoreFont = new Font("Silom", Font.BOLD, 20);
         highest = Math.max(highest, score);
         g.setFont(scoreFont);

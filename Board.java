@@ -15,12 +15,13 @@ import java.io.ObjectOutputStream;
 public class Board extends JPanel implements ActionListener {
     private static ObjectOutputStream output;
     private static ObjectInputStream input;
-    private static String oppath = "";
+    private static String finalResult = "";
     private String gameMode = "";
     private static Rank[] r = new Rank[5];
     private boolean flag = false;
     private static Rank tmp;
     private int ranked;
+    private int rank = 0;
     private boolean onlyexecute = true;
     private Client client;
     
@@ -37,7 +38,7 @@ public class Board extends JPanel implements ActionListener {
     private int [] dy = {0, 0, -1, 1};
     private int pacmand_x, pacmand_y;
     private int req_x, req_y;
-    private int state, dying_count, ghostNumber, eatPoint, initGhostNumber, countTime, setMine, bombX, bombY;
+    private int state, dying_count, ghostNumber, eatPoint, initGhostNumber, countTime, setMine, bombX, bombY, level, startGhostNumber;
     private boolean dying;
     private Player player1;
     private Ghost [] ghost;
@@ -47,11 +48,12 @@ public class Board extends JPanel implements ActionListener {
     private Maze maze;
     private Timer timer;
     private JFrame jFrame;
-    private String name;
+    private String name = "";
 
     // constructor
     public Board(int n,int m) {
         initGhostNumber = n;
+        startGhostNumber = n;
         mode = m;
         //String modestring = "";
         if(mode == 1){
@@ -80,7 +82,6 @@ public class Board extends JPanel implements ActionListener {
     public void setJFrame(JFrame f){
         jFrame = f;
     }
-
     public void initVariables() {
 
         countTime = 0;
@@ -89,15 +90,12 @@ public class Board extends JPanel implements ActionListener {
         client = new Client();
         //dead Animation
         dying_count = 0;
-        state = 0;
-        
-        // add ghost
-        eatPoint = 0;
-
+        state = 0;  
+        level = 0;
         // inital ghost
-        ghost = new Ghost[20];
+        ghost = new Ghost[30];
         ghostNumber = initGhostNumber;
-        for (int i = 0; i < 4; i++) {
+        for (int i = 0; i < 30; i++) {
             ghost[i] = new Ghost();
         }
 
@@ -111,6 +109,17 @@ public class Board extends JPanel implements ActionListener {
 
     private void playGame() {
         if (maze.checkMaze()) {
+        
+            level++;
+            if (mode == 1 && level % 2 == 0 && level / 2 < 4) {
+                initGhostNumber++;
+            }
+            else if (mode == 2 && level < 6) {
+                initGhostNumber++;
+            }
+            else if (mode == 3 && level < 8) {
+                initGhostNumber++;
+            }
             restartgame();
         }
     }
@@ -122,21 +131,22 @@ public class Board extends JPanel implements ActionListener {
         g2d.setColor(Color.white);
         g2d.drawRect(50, SCREEN_SIZE / 2 - 30, SCREEN_SIZE - 100, 50);
 
-        String s = "Press s to start.";
+        String s = "Press s to start.", highestScore = "-1";
         Font small = new Font("Helvetica", Font.BOLD, 14);
         FontMetrics metr = this.getFontMetrics(small);
         Font scoreFont = new Font("Silom", Font.BOLD, 30);
         g2d.setColor(Color.white);
         g2d.setFont(small);
-        String highestScore = client.getScore();
         g2d.drawString(s, (SCREEN_SIZE - metr.stringWidth(s)) / 2, SCREEN_SIZE / 2);
-        s = "Your Highest Score Is " + highestScore; 
-        g2d.setFont(scoreFont);
-        g2d.setColor(new Color(219, 219, 249)); 
+        if (startGhostNumber == 4) {
+            String highestScore = client.getScore();
+            s = "Your Highest Score Is " + highestScore; 
+            g2d.setFont(scoreFont);
+            g2d.setColor(new Color(219, 219, 249)); 
+            g2d.drawString(s, SCREEN_SIZE / 2 - 180, SCREEN_SIZE / 2 + 70);
+        }
         p1score.highestScore(Integer.parseInt(highestScore));
-        g2d.drawString(s, SCREEN_SIZE / 2 - 180, SCREEN_SIZE / 2 + 70);
     }
-
 
 
     private void moveGhost(Graphics2D g2d) {
@@ -166,7 +176,7 @@ public class Board extends JPanel implements ActionListener {
                     ghost[i].nextx = dx[next]; 
                     ghost[i].nexty = dy[next];
                 }
-                else if (i >= 2 && ghost[i].freeze == 0) {
+                else if (ghost[i].freeze == 0 && ghost[i].mode == 0) {
                     int []randomx = new int[4];
                     int []randomy = new int[4];
                     if ((maze.data[pos] & 1) == 0 && ghost[i].nextx != 1) {
@@ -280,12 +290,6 @@ public class Board extends JPanel implements ActionListener {
                 else {
                     p1score.score += 10;
                 }
-                eatPoint++;
-                if (eatPoint % 40 == 0 && eatPoint != 0) {
-                    ghost[ghostNumber] = new Ghost();
-                    ghost[ghostNumber].addGhost(12 * BLOCK_SIZE, 12 * BLOCK_SIZE, "Red");
-                    ghostNumber++;
-                }
             }
 
             if ((ch & 32) != 0) {
@@ -383,7 +387,7 @@ public class Board extends JPanel implements ActionListener {
         }
         path = new Path(N_BLOCKS);
         path.loadMap("map.txt");
-        item = new Item(path.map);
+        item = new Item(path.map, mode);
         player1.pacman_x = 0 * BLOCK_SIZE;
         player1.pacman_y = 0 * BLOCK_SIZE;
         player1.speed = 3;
@@ -395,8 +399,7 @@ public class Board extends JPanel implements ActionListener {
         pacmand_y = 0;
         req_x = 0;
         req_y = 0;
-        
-        eatPoint = 0;
+
         ghostNumber = initGhostNumber;
         for (int i = 11; i < 15; i++) {
             ghost[i - 11].x = i * BLOCK_SIZE;
@@ -406,8 +409,15 @@ public class Board extends JPanel implements ActionListener {
             ghost[i - 11].state = 0;
             ghost[i - 11].speed = 3;
         }
-
-        
+        for (int i = 4; i < initGhostNumber; i++) {
+            ghost[i].x = 13 * BLOCK_SIZE;
+            ghost[i].y = 12 * BLOCK_SIZE;
+            ghost[i].ori_x = 13 * BLOCK_SIZE;
+            ghost[i].ori_y = 12 * BLOCK_SIZE;
+            ghost[i].state = 0;
+            ghost[i].speed = 3;
+        }
+        countTime = 0;
         dying = false;
     }
 
@@ -423,6 +433,33 @@ public class Board extends JPanel implements ActionListener {
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
         doDrawing(g);
+        gameControll();
+    }
+
+    private void gameControll() {
+        countTime++;
+        if (mode == 1) {
+            if (countTime % 875 == 0 && countTime != 0 && countTime / 875 < 3) {
+                ghost[ghostNumber] = new Ghost();
+                ghost[ghostNumber].addGhost(12 * BLOCK_SIZE, 12 * BLOCK_SIZE, "Red");
+                ghostNumber++;
+            } 
+        }
+        else if (mode == 2) {
+            if (countTime % 625 == 0 && countTime != 0 && countTime / 625 < 5) {
+                ghost[ghostNumber] = new Ghost();
+                ghost[ghostNumber].addGhost(12 * BLOCK_SIZE, 12 * BLOCK_SIZE, "Red");
+                ghostNumber++;
+            } 
+
+        }
+        else if (mode == 3) {
+             if (countTime % 500 == 0 && countTime != 0 && countTime / 500 < 7) {
+                ghost[ghostNumber] = new Ghost();
+                ghost[ghostNumber].addGhost(12 * BLOCK_SIZE, 12 * BLOCK_SIZE, "Red");
+                ghostNumber++;
+            } 
+        }
     }
 
     private void doDrawing(Graphics g) {
@@ -481,18 +518,21 @@ public class Board extends JPanel implements ActionListener {
         else if (endgame == true) {
             
             // System.out.println(oppath);
-
-            GameOver game = new GameOver();
+            
+            GameOver game = new GameOver(finalResult);
             game.showImage(g2d);
             
-            if(onlyexecute) {
+            if(onlyexecute && startGhostNumber == 4) {
                 onlyexecute = false;
-                client.updateRecord(gameMode, name, p1score.score);
-                System.out.println(client.getScore());
+                if (p1score.score == p1scrore.highest)
+                    client.updateRecord(gameMode, name, p1score.score);
+                client.getRank(gameMode, name);
+                finalResult = "New Record for " + name + " with Rank " + client.getRank(); 
+                if ()
             }
         }
         else {
-            if(onlyexecute) {
+            if(onlyexecute && startGhostNumber == 4) {
                 onlyexecute = false;
                 name = JOptionPane.showInputDialog("Enter your name:");
                 client.getUserScore(gameMode, name);
@@ -573,6 +613,5 @@ public class Board extends JPanel implements ActionListener {
     @Override
     public void actionPerformed(ActionEvent e) {
         repaint();
-        countTime++;
     }
 }

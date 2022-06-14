@@ -22,7 +22,6 @@ public class PacmanSingle extends JFrame {
         setSize(700, 720);
         setLocationRelativeTo(null);
         setVisible(true);
-
     }
 
     

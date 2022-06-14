@@ -12,7 +12,7 @@ public class Ghost {
     private Image []weak2;
     private Image eye;
     public int nextx, nexty, x, y, control = 0, ori_x, ori_y, count = 0, speed;
-    public int state = 0, freeze, freeze_time, chasePlayer, dead;
+    public int state = 0, freeze, freeze_time, chasePlayer, dead, mode;
     
 
     public void loadImages(String s) {
@@ -38,6 +38,7 @@ public class Ghost {
         freeze = 0;
         freeze_time = 0;
         dead = 0;
+        mode = 0;
     }
     
     public Ghost() {

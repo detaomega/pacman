@@ -468,7 +468,7 @@ public class Board2 extends JPanel implements ActionListener {
         path2 = new Path(N_BLOCKS);
         path1.loadMap("map.txt");
         path2.loadMap("map.txt");
-        item = new Item(path1.map);
+        item = new Item(path1.map, mode);
         path1.update(0, 0);
         path2.update(25, 25);
         ghostNumber = initGhostNumber;

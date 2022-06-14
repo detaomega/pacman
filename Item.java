@@ -14,17 +14,21 @@ public class Item {
     private int generateTime;
     private int [][]map;
     private int [][]occ = new int[30][30];
-    public Item(int map[][]) {
+    public int mode;
+    public Item(int map[][], int x) {
         ice = new Ice();
         apple = new Apple(); 
         blood = new Blood();
         cherry = new Cherry();
         mine = new Mine();
-        ice.addItem(5, 12);
-        apple.addItem(20, 12);
-        blood.addItem(5, 16);
-        cherry.addItem(20, 16);
-        mine.addItem(20, 17);
+        if (x == 3) {
+            ice.addItem(5, 12);
+            apple.addItem(20, 12);
+            blood.addItem(5, 16);
+            cherry.addItem(20, 16);
+            mine.addItem(20, 17);
+        }
+
         generateTime = 0;
         this.map = map;
         occ[5][12] = 1;
@@ -42,7 +46,7 @@ public class Item {
         mine.drawMine(g2d);
         mine.drawsetMine(g2d);
         generateTime = generateTime + 1;
-        if (generateTime % 300 == 0 && generateTime != 0) {
+        if (generateTime % 300 == 0 && generateTime != 0 && mode >= 2) {
             generateItem();
         }
     }
