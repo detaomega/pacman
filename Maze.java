@@ -42,23 +42,23 @@ public class Maze {
                 g2d.setColor(Color.BLUE);
                 g2d.setStroke(new BasicStroke(2));
 
-                if ((data[i] & 1) != 0) { // 左邊界
+                if ((data[i] & 1) != 0) { 
                     g2d.drawLine(x, y, x, y + BLOCK_SIZE - 1);
                 }
 
-                if ((data[i] & 2) != 0) { // 上邊界
+                if ((data[i] & 2) != 0) { 
                     g2d.drawLine(x, y, x + BLOCK_SIZE - 1, y);
                 }
 
-                if ((data[i] & 4) != 0) { // 右邊界
+                if ((data[i] & 4) != 0) { 
                     g2d.drawLine(x + BLOCK_SIZE - 1, y, x + BLOCK_SIZE - 1, y + BLOCK_SIZE - 1);
                 }
 
-                if ((data[i] & 8) != 0) { // 下邊界
+                if ((data[i] & 8) != 0) { 
                     g2d.drawLine(x, y + BLOCK_SIZE - 1, x + BLOCK_SIZE - 1, y + BLOCK_SIZE - 1);
                 }
 
-                if ((data[i] & 16) != 0) { // 果實
+                if ((data[i] & 16) != 0) { 
                     if (player == 1)
                         g2d.setColor(player1Color);
                     else 

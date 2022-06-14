@@ -23,7 +23,7 @@ public class GameOver {
     private boolean flag = false;
     private static Rank tmp;
     private Image pic;
-    private int ranked = 5; // 名次
+    private int ranked = 5; 
 
     public GameOver() {
         pic = new ImageIcon("images/gameover.jpeg").getImage();
