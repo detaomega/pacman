@@ -7,6 +7,7 @@ import java.util.Scanner;
 public class Client {
     String Name = "";
     String Score = "0"; 
+    String Rank = ""; 
     public void updateRecord(String type, String name, int score) {
         final String HOST = "140.113.235.151";
         final int PORT = 8787;
@@ -72,10 +73,38 @@ public class Client {
             System.err.println("Error opening file.");
         }
     }
+
+    public void getRank(String type, String name) {
+        final String HOST = "140.113.235.151";
+        final int PORT = 8787;
+
+        System.out.println("Client started.");
+        try {
+            Socket socket = new Socket(HOST, PORT);
+            PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
+            Scanner in = new Scanner(socket.getInputStream());
+        
+        
+            out.println("getRank\n" + type + "\n" + name);
+                // if (in.nextLine().equals("OK!")) break;
+            Name = name;
+            Rank = in.nextLine();
+        }
+        catch(IOException e){
+            System.err.println("Error opening file.");
+        }
+    }
+
     public String getName() {
         return Name;
     }
+    
     public String getScore() {
         return Score;
+    }
+
+    public String getRank() {
+        return Rank;
+        // System.out.println(Rank);
     }
 }

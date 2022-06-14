@@ -28,7 +28,7 @@ public class Item {
             cherry.addItem(20, 16);
             mine.addItem(20, 17);
         }
-
+        mode = x;
         generateTime = 0;
         this.map = map;
         occ[5][12] = 1;
@@ -46,7 +46,10 @@ public class Item {
         mine.drawMine(g2d);
         mine.drawsetMine(g2d);
         generateTime = generateTime + 1;
-        if (generateTime % 300 == 0 && generateTime != 0 && mode >= 2) {
+        if (generateTime % 600 == 0 && generateTime != 0 && mode == 2) {
+            generateItem();
+        }
+        else if (generateTime % 900 == 0 && generateTime != 0 && mode == 1) {
             generateItem();
         }
     }
@@ -97,7 +100,7 @@ public class Item {
 
     private void generateItem() {
         Random r1 = new Random();
-        int x, y;
+        int x, y, newItem;
         while (true) {
             x = r1.nextInt(26);
             y = r1.nextInt(26);
@@ -105,7 +108,12 @@ public class Item {
                 break;
             }
         }
-        int newItem  = r1.nextInt(5);
+        while (true) {
+            newItem  = r1.nextInt(5);
+            if (mode != 1 || newItem != 4) break; 
+        }
+      
+
         if (newItem == 0) {
             occ[x][y] = 1;
             ice.addItem(x, y);

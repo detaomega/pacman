@@ -5,7 +5,7 @@ import java.util.Random;
 
 public class Board2 extends JPanel implements ActionListener {
     public int mode = 1;
-
+    private String finalResult = "";
     private Dimension d;
 
     private boolean inGame = false;
@@ -102,7 +102,7 @@ public class Board2 extends JPanel implements ActionListener {
                     int next = 0;
                     Path recover = new Path(N_BLOCKS);
                     recover.loadMap("map.txt");
-                    recover.update((int) ghost[i].ori_x / BLOCK_SIZE, (int) (ghost[i].ori_y / BLOCK_SIZE));
+                    recover.update((int) ghost[i].ori_x / BLOCK_SIZE, (int) (ghost[i].ori_y / BLOCK_SIZE), 0, 0);
                     next = recover.next((int) ghost[i].x / BLOCK_SIZE, (int) (ghost[i].y / BLOCK_SIZE), ghost[i].state);
                     ghost[i].nextx = dx[next]; 
                     ghost[i].nexty = dy[next];
@@ -313,7 +313,7 @@ public class Board2 extends JPanel implements ActionListener {
             blockX = (int) (player1.pacman_x / BLOCK_SIZE);
             blockY = (int) (player1.pacman_y / BLOCK_SIZE);
         } 
-        path1.update(blockX, blockY);
+        path1.update(blockX, blockY, p1pacmand_x, p1pacmand_y);
         int eatItem = item.getItem(blockX, blockY);
         if (eatItem == 1) {
             try {
@@ -417,7 +417,7 @@ public class Board2 extends JPanel implements ActionListener {
             blockX = (int) (player2.pacman_x / BLOCK_SIZE);
             blockY = (int) (player2.pacman_y / BLOCK_SIZE);
         } 
-        path2.update(blockX, blockY);
+        path2.update(blockX, blockY, p2pacmand_x, p2pacmand_y);
         int eatItem = item.getItem(blockX, blockY);
         if (eatItem == 1) {
             try {
@@ -469,8 +469,8 @@ public class Board2 extends JPanel implements ActionListener {
         path1.loadMap("map.txt");
         path2.loadMap("map.txt");
         item = new Item(path1.map, mode);
-        path1.update(0, 0);
-        path2.update(25, 25);
+        path1.update(0, 0, 0, 0);
+        path2.update(25, 25, 0, 0);
         ghostNumber = initGhostNumber;
         player1.pacman_x = 0 * BLOCK_SIZE;
         player1.pacman_y = 0 * BLOCK_SIZE;
@@ -566,7 +566,7 @@ public class Board2 extends JPanel implements ActionListener {
         g2d.fillRect(0, 0, d.width, d.height);
 
         if (p1score.life <= 0 && p2score.life <= 0) {
-            GameOver game = new GameOver();
+            GameOver game = new GameOver(finalResult);
             game.showImage(g2d);
         }
         else if (state != 0) {

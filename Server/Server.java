@@ -64,6 +64,26 @@ public class Server {
                                     t.printStackTrace();
                                 }
                             }
+                            else if (input.equals("getRank")) {
+                                String type = in.nextLine();
+                                String name = in.nextLine();
+                                String result = "";
+                                try {
+                                    String target = new String("/net/cs/109/109550032/rank.sh" + " " + type + " " +  name);
+                                    Runtime rt = Runtime.getRuntime();
+                                    Process proc = rt.exec(target);
+                                    proc.waitFor();
+                                    StringBuffer output = new StringBuffer();
+                                    BufferedReader reader = new BufferedReader(new InputStreamReader(proc.getInputStream()));
+                                    String line = "";
+                                    while ((line = reader.readLine())!= null) {
+                                        result += (line + "\n");
+                                    }
+                                } catch (Throwable t) {
+                                    t.printStackTrace();
+                                }
+                                out.println(result);
+                            }
                             else {
                                 String type = in.nextLine();
                                 String name = in.nextLine();

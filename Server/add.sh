@@ -18,3 +18,5 @@ then
     }' > txt.in
     sort -k 2 -r -n txt.in > "score/$1"
 fi
+
+rm txt.in

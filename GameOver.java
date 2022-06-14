@@ -24,14 +24,19 @@ public class GameOver {
     private static Rank tmp;
     private Image pic;
     private int ranked = 5; 
-
-    public GameOver() {
+    private String result;
+    public GameOver(String s) {
         pic = new ImageIcon("images/gameover.jpeg").getImage();
+        result = s;
         //System.exit(0);
     }
 
     public void showImage(Graphics g2d){
         g2d.drawImage(pic, 0, 300, null);
+        Font scoreFont = new Font("Silom", Font.BOLD, 30);
+        g2d.setFont(scoreFont);
+        g2d.setColor(new Color(255, 177, 207)); 
+        g2d.drawString(result, 150, 600);
         // System.exit(0);
     }
 

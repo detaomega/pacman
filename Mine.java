@@ -23,6 +23,8 @@ public class Mine {
         boob[2] = new ImageIcon("images/Mine/boom3.png").getImage();
         site = new ArrayList<Point>();
         setMine = new ArrayList<Point>();
+        site.clear();
+        setMine.clear();
     }
 
     public void drawMine(Graphics2D g2d) {
