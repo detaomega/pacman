@@ -20,7 +20,7 @@ public class Board extends JPanel implements ActionListener {
     private static Rank[] r = new Rank[5];
     private boolean flag = false;
     private static Rank tmp;
-    private int ranked; // 名次
+    private int ranked;
     private boolean onlyexecute = true;
     private Client client;
     
