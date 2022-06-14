@@ -1,3 +1,4 @@
+import java.io.*;
 import java.awt.*;
 import java.awt.event.*;
 import javax.swing.*;
@@ -469,6 +470,8 @@ public class Board extends JPanel implements ActionListener {
                 ghost[ghostNumber] = new Ghost();
                 ghost[ghostNumber].addGhost(12 * BLOCK_SIZE, 12 * BLOCK_SIZE, "Red");
                 ghostNumber++;
+                Random r1 = new Random();
+                ghost[i].mode = r1.nextInt(3);
             } 
         }
     }
