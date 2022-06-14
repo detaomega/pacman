@@ -10,6 +10,7 @@ public class Mine {
 
     
     private Image mine, mine2;
+    private Image [] boob = new Image[3];
     private int BLOCK_SIZE = 24;
     ArrayList<Point> site;
     ArrayList<Point> setMine;
@@ -17,6 +18,9 @@ public class Mine {
     public Mine() {
         mine = new ImageIcon("images/Mine/mine.png").getImage();
         mine2 = new ImageIcon("images/Mine/mine2.png").getImage();
+        boob[0] = new ImageIcon("images/Mine/boom1.png").getImage();
+        boob[1] = new ImageIcon("images/Mine/boom2.png").getImage();
+        boob[2] = new ImageIcon("images/Mine/boom3.png").getImage();
         site = new ArrayList<Point>();
         setMine = new ArrayList<Point>();
     }
@@ -27,6 +31,11 @@ public class Mine {
         }
     }
 
+
+    public void drawBoob(Graphics2D g2d, int id, int x, int y) {
+        g2d.drawImage(boob[id], x, y, null);
+    }
+    
     public void drawsetMine(Graphics2D g2d) {
         for (Point now : setMine) {
             if (flag == 0)

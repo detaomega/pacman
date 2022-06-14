@@ -68,10 +68,6 @@ public class Item {
             occ[x][y] = 0;
             return 5;
         }
-        else if (mine.eatMine(x, y)) {
-            occ[x][y] = 0;
-            return 6;
-        }
         else 
             return -1;
     }
@@ -81,8 +77,20 @@ public class Item {
         occ[x][y] = 1;
         mine.addMine(x, y);
         return true;
-        
     }
+
+    public boolean bomb(int x, int y) {
+        if (mine.eatMine(x, y) == true) {
+            occ[x][y] = 0;
+            return true;
+        }
+        return false;
+    }
+
+    public void drawBoob(Graphics2D g2d, int id, int x, int y) {
+        mine.drawBoob(g2d, id, x, y);
+    }
+
     private void generateItem() {
         Random r1 = new Random();
         int x, y;

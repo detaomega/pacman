@@ -32,12 +32,12 @@ public class Board extends JPanel implements ActionListener {
     private boolean inGame = false, endgame = false;
     private final int BLOCK_SIZE = 24;
     private final int N_BLOCKS = 26;
-    private final int SCREEN_SIZE = N_BLOCKS * BLOCK_SIZE;
+    private final int SCREEN_SIZE = 700;
     private int [] dx = {-1, 1, 0, 0};
     private int [] dy = {0, 0, -1, 1};
     private int pacmand_x, pacmand_y;
     private int req_x, req_y;
-    private int state, dying_count, ghostNumber, eatPoint, initGhostNumber, countTime, setMine;
+    private int state, dying_count, ghostNumber, eatPoint, initGhostNumber, countTime, setMine, bombX, bombY;
     private boolean dying;
     private Player player1;
     private Ghost [] ghost;
@@ -125,21 +125,28 @@ public class Board extends JPanel implements ActionListener {
         String s = "Press s to start.";
         Font small = new Font("Helvetica", Font.BOLD, 14);
         FontMetrics metr = this.getFontMetrics(small);
-
+        Font scoreFont = new Font("Silom", Font.BOLD, 30);
         g2d.setColor(Color.white);
         g2d.setFont(small);
+        String highestScore = client.getScore();
         g2d.drawString(s, (SCREEN_SIZE - metr.stringWidth(s)) / 2, SCREEN_SIZE / 2);
+        s = "Your Highest Score Is " + highestScore; 
+        g2d.setFont(scoreFont);
+        g2d.setColor(new Color(219, 219, 249)); 
+        p1score.highestScore(Integer.parseInt(highestScore));
+        g2d.drawString(s, SCREEN_SIZE / 2 - 180, SCREEN_SIZE / 2 + 70);
     }
 
 
 
     private void moveGhost(Graphics2D g2d) {
         for (int i = 0; i < ghostNumber; i++) {
+            if (ghost[i].dead == 1) continue;
             if (ghost[i].x % BLOCK_SIZE == 0 && ghost[i].y % BLOCK_SIZE == 0) {
                 int pos = ghost[i].x / BLOCK_SIZE + N_BLOCKS * (int) (ghost[i].y / BLOCK_SIZE);
                 int count = 0;
                 count = 0;
-                if (ghost[i].state == 3) {
+                if (ghost[i].state == 3) { //recover
                     int next = 0;
                     Path recover = new Path(N_BLOCKS);
                     recover.loadMap("map.txt");
@@ -148,6 +155,12 @@ public class Board extends JPanel implements ActionListener {
                     ghost[i].nextx = dx[next]; 
                     ghost[i].nexty = dy[next];
                 }
+                else if (item.bomb((int) ghost[i].x / BLOCK_SIZE, (int) (ghost[i].y / BLOCK_SIZE)) == true) {
+                    state = 2;
+                    bombX = ghost[i].x;
+                    bombY = ghost[i].y;
+                    ghost[i].eatBomb();  
+                } 
                 else if (ghost[i].freeze == 0 && (ghost[i].state == 1 || ghost[i].state == 2)) {
                     int next = path.next((int) ghost[i].x / BLOCK_SIZE, (int) (ghost[i].y / BLOCK_SIZE), ghost[i].state);
                     ghost[i].nextx = dx[next]; 
@@ -308,7 +321,6 @@ public class Board extends JPanel implements ActionListener {
                 pacmand_x = 0;
                 pacmand_y = 0;
             }
-
         }
         player1.pacman_x = player1.pacman_x + player1.speed * pacmand_x;
         player1.pacman_y = player1.pacman_y + player1.speed * pacmand_y;
@@ -348,10 +360,7 @@ public class Board extends JPanel implements ActionListener {
             maze.doubleScore(1);
         }
         else if (eatItem == 5) {
-            p1score.mine_number++;
-        }
-        else if (eatItem == 6) {
-
+            p1score.mine_number = Math.min(2, p1score.mine_number + 1);
         }
         if (setMine == 1) {
             setMine = 0;
@@ -381,6 +390,7 @@ public class Board extends JPanel implements ActionListener {
         path.update(0, 0);
         player1.view_x = 0;
         player1.view_y = 0;
+
         pacmand_x = 0;
         pacmand_y = 0;
         req_x = 0;
@@ -424,8 +434,8 @@ public class Board extends JPanel implements ActionListener {
 
         if (state == 1) {
             maze.drawMaze(g2d);
-            p1score.drawScore(g2d, SCREEN_SIZE);
-
+            p1score.drawScore(g2d, 624);
+            p1score.drawHighestScore(g2d);
             g.setColor(new Color(255, 254, 56));
             try {
                 Thread.sleep(100);
@@ -444,10 +454,25 @@ public class Board extends JPanel implements ActionListener {
             }
             
         }
+        else if (state >= 2) {
+            maze.drawMaze(g2d);
+            p1score.drawScore(g2d, 624);
+            p1score.drawHighestScore(g2d);
+            item.drawBoob(g2d, state - 2, bombX, bombY);
+            try {
+                Thread.sleep(500);
+            } catch (InterruptedException e) {
+                    
+            }
+            state = state + 1;
+            if (state == 5) state = 0;
+        }
         else if (inGame) {
+            onlyexecute = true;
             playGame();
             maze.drawMaze(g2d);
-            p1score.drawScore(g2d, SCREEN_SIZE);
+            p1score.drawScore(g2d, 624);
+            p1score.drawHighestScore(g2d);
             item.drawItem(g2d);
             movePacman(g2d);
             player1.drawPacman(g2d);
@@ -459,20 +484,22 @@ public class Board extends JPanel implements ActionListener {
 
             GameOver game = new GameOver();
             game.showImage(g2d);
-            client.updateRecord(gameMode, name, p1score.score);
-            timer.stop();
             
+            if(onlyexecute) {
+                onlyexecute = false;
+                client.updateRecord(gameMode, name, p1score.score);
+                System.out.println(client.getScore());
+            }
         }
         else {
             if(onlyexecute) {
                 onlyexecute = false;
                 name = JOptionPane.showInputDialog("Enter your name:");
-                // client.updateRecord(gameMode, name, p1score.score);
-                
+                client.getUserScore(gameMode, name);
+                System.out.println(client.getScore());
                 timer.start();
             }
             else {
-            
                 showIntroScreen(g2d);
             }
         }

@@ -12,7 +12,7 @@ public class Ghost {
     private Image []weak2;
     private Image eye;
     public int nextx, nexty, x, y, control = 0, ori_x, ori_y, count = 0, speed;
-    public int state = 0, freeze, freeze_time, chasePlayer;
+    public int state = 0, freeze, freeze_time, chasePlayer, dead;
     
 
     public void loadImages(String s) {
@@ -37,7 +37,7 @@ public class Ghost {
         eye = new ImageIcon("images/ghostEye/eye.png").getImage();
         freeze = 0;
         freeze_time = 0;
-    
+        dead = 0;
     }
     
     public Ghost() {
@@ -65,6 +65,7 @@ public class Ghost {
     }
 
     public void drawGhost(Graphics2D g2d) {
+        if (dead == 1) return;
         if (state == 1) {
             g2d.drawImage(weak[control], x, y, null);
             timer();
@@ -107,6 +108,13 @@ public class Ghost {
         speed = newSpeed;
     }
     
+
+    public void eatBomb() {
+        x = ori_x;
+        y = ori_y;
+        dead = 1;
+    } 
+
     public void reset() {
         if (x == ori_x && y == ori_y && state == 3) {
             x = ori_x;
