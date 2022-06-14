@@ -1,6 +1,16 @@
 #!/bin/bash
-CHECK=$(cat "score/$1" | grep "$2" | awk '{print $2}')
-echo $CHECK
+cat "score/$1" | awk -v name=$2 '
+    BEGIN{
+        i = 0;
+    } {
+        i++;
+        if ($1 == name) {
+            print $2
+
+        }
+    }
+' > txt.in
+CHECK=$(cat txt.in)
 if [ "$CHECK" == "" ]
 then
     echo "$2 $3" >> "score/$1"

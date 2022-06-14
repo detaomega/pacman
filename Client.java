@@ -7,7 +7,7 @@ import java.util.Scanner;
 public class Client {
     String Name = "";
     String Score = "0"; 
-    String Rank = ""; 
+    String Rk = ""; 
     public void updateRecord(String type, String name, int score) {
         final String HOST = "140.113.235.151";
         final int PORT = 8787;
@@ -88,7 +88,9 @@ public class Client {
             out.println("getRank\n" + type + "\n" + name);
                 // if (in.nextLine().equals("OK!")) break;
             Name = name;
-            Rank = in.nextLine();
+            
+            Rk = in.nextLine();
+            System.out.print(Rk);
         }
         catch(IOException e){
             System.err.println("Error opening file.");
@@ -104,7 +106,6 @@ public class Client {
     }
 
     public String getRank() {
-        return Rank;
-        // System.out.println(Rank);
+        return Rk;
     }
 }

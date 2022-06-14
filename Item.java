@@ -24,7 +24,6 @@ public class Item {
         if (x == 3) {
             ice.addItem(5, 12);
             apple.addItem(20, 12);
-            blood.addItem(5, 16);
             cherry.addItem(20, 16);
             mine.addItem(20, 17);
         }

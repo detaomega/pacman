@@ -469,9 +469,10 @@ public class Board extends JPanel implements ActionListener {
              if (countTime % 500 == 0 && countTime != 0 && countTime / 500 < 7) {
                 ghost[ghostNumber] = new Ghost();
                 ghost[ghostNumber].addGhost(12 * BLOCK_SIZE, 12 * BLOCK_SIZE, "Red");
-                ghostNumber++;
+
                 Random r1 = new Random();
-                ghost[i].mode = r1.nextInt(3);
+                ghost[ghostNumber].mode = r1.nextInt(3);
+                ghostNumber++;
             } 
         }
     }
@@ -537,8 +538,9 @@ public class Board extends JPanel implements ActionListener {
             
             if(onlyexecute && startGhostNumber == 4) {
                 onlyexecute = false;
-                if (p1score.score == p1score.highest)
+                if (p1score.score == p1score.highest) {
                     client.updateRecord(gameMode, name, p1score.score);
+                }
                 client.getRank(gameMode, name);
                 finalResult = "New Record for " + name + " with Rank " + client.getRank(); 
             }
@@ -576,6 +578,12 @@ public class Board extends JPanel implements ActionListener {
             inGame = false;
         }
         item = new Item(path.map, mode);
+        if (mode >= 2) {
+            ghost[0].mode = 1;
+            ghost[1].mode = 2;
+        }
+        countTime = 0;
+        dying = false;
     }
 
     class TAdapter extends KeyAdapter {
