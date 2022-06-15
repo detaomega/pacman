@@ -36,7 +36,7 @@ public class GameOver {
         Font scoreFont = new Font("Silom", Font.BOLD, 30);
         g2d.setFont(scoreFont);
         g2d.setColor(new Color(255, 177, 207)); 
-        g2d.drawString(result, 150, 600);
+        g2d.drawString(result, 100, 600);
         // System.exit(0);
     }
 

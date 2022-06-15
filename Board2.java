@@ -566,9 +566,18 @@ public class Board2 extends JPanel implements ActionListener {
         g2d.fillRect(0, 0, d.width, d.height);
 
         if (p1score.life <= 0 && p2score.life <= 0) {
-            GameOver game = new GameOver(finalResult);
-            game.showImage(g2d);
+            if (p1score.score > p2score.score) {
+                finalResult = "Player1 Win The Game";
+                GameOver game = new GameOver(finalResult);
+                game.showImage(g2d);
+            }
+            else {
+                finalResult = "Player2 Win The Game";
+                GameOver game = new GameOver(finalResult);
+                game.showImage(g2d);
+            }
         }
+
         else if (state != 0) {
             maze.drawMaze(g2d);
             p1score.drawScore(g2d, SCREEN_SIZE);
@@ -607,6 +616,16 @@ public class Board2 extends JPanel implements ActionListener {
         player1.pacman_y = 0 * BLOCK_SIZE;
         player2.pacman_x = 25 * BLOCK_SIZE;
         player2.pacman_y = 25 * BLOCK_SIZE;
+        p1score.life--;
+        player1.pacman_x = 0;
+        player1.pacman_y = 0;
+        ghostNumber = initGhostNumber;
+        for (int i = 0; i < ghostNumber; i++) {
+            ghost[i].x = ghost[i].ori_x;
+            ghost[i].y = ghost[i].ori_y;
+            ghost[i].dead = 0;
+        }
+        item = new Item(path1.map, mode);
     }
 
     class TAdapter extends KeyAdapter {

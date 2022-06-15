@@ -12,8 +12,8 @@ public class Score {
         pacman = new ImageIcon("images/" + s + "/left4.png").getImage();
         mine = new ImageIcon("images/Mine/mine.png").getImage();
         score = 0;
-        life = 3;
-        mine_number = 1;
+        life = 1;
+        mine_number = 0;
     }
 
     public void drawScore(Graphics2D g, int Y) {

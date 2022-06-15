@@ -53,6 +53,7 @@ public class Board extends JPanel implements ActionListener {
     private JFrame jFrame;
     private String name = "";
 
+    private int eatGhost = 100;
     // constructor
     public Board(int n,int m) {
         initGhostNumber = n;
@@ -258,7 +259,8 @@ public class Board extends JPanel implements ActionListener {
                     }
                 }  
                 else {
-                    p1score.score += 100;
+                    p1score.score += eatGhost;
+                    eatGhost *= 2;
                     try {
                         Thread.sleep(150);
                     } 
@@ -301,6 +303,7 @@ public class Board extends JPanel implements ActionListener {
 
             if ((ch & 32) != 0) {
                 maze.data[pos] -= 32;
+                eatGhost = 100;
                 for (int i = 0; i < 4; i++) {
                     ghost[i].weak();
                 }
@@ -451,14 +454,14 @@ public class Board extends JPanel implements ActionListener {
     private void gameControll() {
         countTime++;
         if (mode == 1) {
-            if (countTime % 875 == 0 && countTime != 0 && countTime / 875 < 3) {
+            if (countTime % 675 == 0 && countTime != 0 && countTime / 675 < 3) {
                 ghost[ghostNumber] = new Ghost();
                 ghost[ghostNumber].addGhost(12 * BLOCK_SIZE, 12 * BLOCK_SIZE, "Red");
                 ghostNumber++;
             } 
         }
         else if (mode == 2) {
-            if (countTime % 625 == 0 && countTime != 0 && countTime / 625 < 5) {
+            if (countTime % 425 == 0 && countTime != 0 && countTime / 425 < 5) {
                 ghost[ghostNumber] = new Ghost();
                 ghost[ghostNumber].addGhost(12 * BLOCK_SIZE, 12 * BLOCK_SIZE, "Red");
                 ghostNumber++;
@@ -466,7 +469,7 @@ public class Board extends JPanel implements ActionListener {
 
         }
         else if (mode == 3) {
-             if (countTime % 500 == 0 && countTime != 0 && countTime / 500 < 7) {
+             if (countTime % 250 == 0 && countTime != 0 && countTime / 250 < 7) {
                 ghost[ghostNumber] = new Ghost();
                 ghost[ghostNumber].addGhost(12 * BLOCK_SIZE, 12 * BLOCK_SIZE, "Red");
 

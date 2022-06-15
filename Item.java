@@ -26,6 +26,7 @@ public class Item {
             apple.addItem(20, 12);
             cherry.addItem(20, 16);
             mine.addItem(20, 17);
+            blood.addItem(5, 17);
         }
         mode = x;
         generateTime = 0;
@@ -45,10 +46,10 @@ public class Item {
         mine.drawMine(g2d);
         mine.drawsetMine(g2d);
         generateTime = generateTime + 1;
-        if (generateTime % 600 == 0 && generateTime != 0 && mode == 2) {
+        if (generateTime % 300 == 0 && generateTime != 0 && mode == 3) {
             generateItem();
         }
-        else if (generateTime % 900 == 0 && generateTime != 0 && mode == 1) {
+        else if (generateTime % 600 == 0 && generateTime != 0 && mode == 2) {
             generateItem();
         }
     }
@@ -109,7 +110,7 @@ public class Item {
         }
         while (true) {
             newItem  = r1.nextInt(5);
-            if (mode != 1 || newItem != 4) break; 
+            if (mode != 2 || newItem != 4) break; 
         }
       
 
