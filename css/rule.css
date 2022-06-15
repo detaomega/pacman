@@ -2,7 +2,7 @@
 /* CSS that styles various two-dimensional shapes */
 
 .root {
-     -fx-background-image: url("../images/rule.jpg");
+     -fx-background-image: url("../images/rule.png");
 }
 
 .button {

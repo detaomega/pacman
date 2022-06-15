@@ -26,6 +26,7 @@ public class Board extends JPanel implements ActionListener {
     private int rank = 0;
     private boolean onlyexecute = true;
     private Client client;
+    private boolean checkranked = false;
     
     
     public int mode = 1;
@@ -85,7 +86,6 @@ public class Board extends JPanel implements ActionListener {
         jFrame = f;
     }
     public void initVariables() {
-
         countTime = 0;
         setMine = 0;
         d = new Dimension(400, 400);
@@ -531,8 +531,6 @@ public class Board extends JPanel implements ActionListener {
             moveGhost(g2d);
         } 
         else if (endgame == true) {
-            
-            
             GameOver game = new GameOver(finalResult);
             game.showImage(g2d);
             
@@ -541,6 +539,14 @@ public class Board extends JPanel implements ActionListener {
                 if (p1score.score == p1score.highest) {
                     client.updateRecord(gameMode, name, p1score.score);
                 }
+
+                // if(flag){
+                //     JOptionPane.showMessageDialog(null, "Congratulations!\nYour score is " + p1score.score + "\nYour rank is " + ranked +"\nPress s to restart or close the page. ");
+                // }
+                // else{
+                //     JOptionPane.showMessageDialog(null, "Press s to restart or close the page. ");
+    
+                // }
                 client.getRank(gameMode, name);
                 finalResult = "New Record for " + name + " with Rank " + client.getRank(); 
             }
@@ -631,6 +637,22 @@ public class Board extends JPanel implements ActionListener {
                 }
             }
         }
+    }
+
+    public void checkOnRank(){
+        Client client = new Client();
+        ranked = 6;
+        flag = false;
+        for(int i = 1; i <= 5 ; i++) {
+            client.getRecord(gameMode, i);
+            int score = Integer.parseInt(client.getScore());
+            if(p1score.score > score){
+                ranked = i;
+                flag = true;
+                return;
+            }
+        }
+
     }
 
     @Override
